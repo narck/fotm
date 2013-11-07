@@ -16,6 +16,6 @@ By default, the app runs at port 8080, so use localhost:8080.
 
 TO-DO:
 * Core logic
-* CLI component
-* Unit tests
-* Servlet frontend
+* API bindings
+* CLI component (portmapping)
+* Unit testing
