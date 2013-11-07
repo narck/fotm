@@ -1,3 +1,4 @@
 31.10.2013 - 21-22 Documentation
 4.11.2013 - 8-10 Documentation, planning ahead
 5.11.2013 - 12-14 Coding, documentation, Maven
+7.11.2013 - 17-18 Coding, testing, class diagram

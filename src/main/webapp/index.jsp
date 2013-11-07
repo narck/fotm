@@ -5,9 +5,20 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
         <title>Flavour of the Month</title>
+    
+        <style type="text/css">
+            body {
+            color: black;
+            width: 50%;
+            margin-left: 10%;
+            }
+        </style>
     </head>
+    
     <body>
-        <h1>Hello World!</h1>
+        <h1>Flavour of the Month</h1>
+        <h2>Find out what it is!</h2>
     </body>
 </html>
