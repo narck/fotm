@@ -5,6 +5,15 @@ University of Helsinki Java assignment for "Javalabra 2013"
 
 Need to use a database for your program? This app will tell you which one to choose.
 
+# Instructions
+To run the app, simply clone the source and run the following in jlab/:
+```shell
+$ mvn clean package
+$ java -jar target/dependency/jetty-runner.jar /target/<war package>.war
+```
+
+By default, the app runs at port 8080, so use localhost:8080.
+
 TO-DO:
 * Core logic
 * CLI component

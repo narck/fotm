@@ -11,6 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import wad.jlab.logic.EvaluatorService;
+import wad.jlab.logic.FotmEvaluator;
 
 /**
  *
@@ -18,7 +20,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "FotmServlet", urlPatterns = {"/"})
 public class FotmServlet extends HttpServlet {
-
+    
+    private EvaluatorService fotm = new FotmEvaluator();    
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
