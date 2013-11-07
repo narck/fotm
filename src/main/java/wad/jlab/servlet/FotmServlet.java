@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package wad.jlab.servlet;
 
 import java.io.IOException;
@@ -12,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import wad.jlab.logic.EvaluatorService;
-import wad.jlab.logic.FotmEvaluator;
+import wad.jlab.logic.HitEvaluator;
 
 /**
  *
@@ -21,7 +17,7 @@ import wad.jlab.logic.FotmEvaluator;
 @WebServlet(name = "FotmServlet", urlPatterns = {"/"})
 public class FotmServlet extends HttpServlet {
     
-    private EvaluatorService fotm = new FotmEvaluator();    
+    private EvaluatorService fotm = new HitEvaluator();    
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and

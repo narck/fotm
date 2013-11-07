@@ -4,13 +4,20 @@
  */
 package wad.jlab.logic;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  *
  * @author narck
  */
 
-public class FotmEvaluator implements EvaluatorService{
+public class HitEvaluator implements EvaluatorService {
     
+    
+    public HitEvaluator() {
+    
+    }
     private final String[] databases = {
         "mongodb",
         "couchdb",
@@ -21,7 +28,7 @@ public class FotmEvaluator implements EvaluatorService{
         "cassandra",
         "hadoop"
         };
-    private final String baseUrl = "http://twitter.com/";
+    private String baseUrl = "http://twitter.com/";
 
     public String getPage(String url) {
         return "";
@@ -31,6 +38,17 @@ public class FotmEvaluator implements EvaluatorService{
         return 0;
     }    
     
+    public boolean setUrl(String newUrl) {
+        
+        
+        Pattern p = Pattern.compile("^http://.*(.fi|.com)");
+        Matcher m = p.matcher(newUrl);    
+        if (m.matches()) {
+        return true;
+        };
+        
+        return false;
+    }
     
     @Override
     public void evaluate() {
