@@ -13,10 +13,10 @@ It runs a Java Servlet front-end, although the results don't necessarily have on
 To run the app, simply clone the source and run the following in jlab/:
 ```shell
 $ mvn clean package
-$ java -jar target/dependency/jetty-runner.jar /target/<war package>.war
+$ java -jar target/dependency/jetty-runner.jar <--port number> /target/<war package>.war
 ```
 
-By default, the app runs at port 8080, so use localhost:8080.
+By default, the app runs at port 8080, so use localhost:8080. By specifying --port before the .war package, you can run it at any available port.
 
 TO-DO:
 * Core logic
