@@ -2,28 +2,12 @@ package wad;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import wad.jlab.logic.HitEvaluator;
+import wad.jlab.logic.TwitterEvaluator;
 
-public class TestTest {
-    
-    @Test
-    public void sample() {
-        int result = 1 + 1;
-        assertNotEquals("1+1 should not be three", 3, result);
-    }
-    
-    
-    @Test
-    public void sampleTwo() {
-        int result = 1 + 1;
-        assertNotEquals("1+1 should not be three", 3, result);
-    }
-    
-    @Test
-    public void seeResult() {
-        assertEquals(true, true);
-    }
-    
+public class EvaluatorTest {
+        
     @Test
     public void tryInvalidUrl() {
         assertFalse(new HitEvaluator().setUrl("123asdkek"));
@@ -46,9 +30,33 @@ public class TestTest {
         assertTrue(new HitEvaluator().setUrl("http://yle.fi"));
     }
     
+    @Test
     public void tryValidUrl2() {
         assertTrue(new HitEvaluator().setUrl("http://amazon.com"));
     }
+    
+    /**
+     * Twitter class tests
+     */
+    
+    
+    @Test
+    public void checkConnectionIfInvalidUrl() {
+        String badUrl = "asd";
+        TwitterEvaluator te = new TwitterEvaluator();
+        assertEquals(te.checkConnection(badUrl), false);
+        
+    }
+    @Ignore
+    @Test(timeout=5000)
+    public void checkConnectionIfCorrectUrl() {
+        String url = "http://www.google.com";
+        TwitterEvaluator te = new TwitterEvaluator();
+        assertEquals(te.checkConnection(url), true); // presumably! add real connection testing
+        
+    }
+    
+    
     
     /** Tests:
      * Connection?

@@ -7,13 +7,14 @@ package wad.jlab.logic;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- * @author narck
- */
+
+    /**
+     * Evaluator service with no predetermined functionality - although 
+     * easily extendable to parse, if needed at all, HTML, since JSoup is packaged.
+     *
+     */
 
 public class HitEvaluator implements EvaluatorService {
-    
     
     public HitEvaluator() {
     

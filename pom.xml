@@ -42,6 +42,13 @@
             <version>6.0</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.ini4j</groupId>
+            <artifactId>ini4j</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+            
     </dependencies>
 
     <build>
@@ -72,7 +79,7 @@
                 <version>2.1</version>
                 <executions>
                     <execution>
-                        <id>lel</id>
+                        <id>jettyd</id>
                     <phase>package</phase>
                     <goals><goal>copy</goal></goals>
                     <configuration>

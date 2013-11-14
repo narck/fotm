@@ -1,23 +1,18 @@
 package wad.jlab.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import wad.jlab.logic.EvaluatorService;
-import wad.jlab.logic.HitEvaluator;
+import wad.jlab.logic.TwitterEvaluator;
 
-/**
- *
- * @author narck
- */
 @WebServlet(name = "FotmServlet", urlPatterns = {"/"})
 public class FotmServlet extends HttpServlet {
     
-    private EvaluatorService fotm = new HitEvaluator();    
+    private EvaluatorService fotm = new TwitterEvaluator();    
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -31,23 +26,13 @@ public class FotmServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet FotmServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet FotmServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {            
-            out.close();
-        }
+        
+        request.setAttribute("message", "asd"); // Call any interfaces' giveResult().
+      
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
+        
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.
@@ -60,6 +45,7 @@ public class FotmServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         processRequest(request, response);
     }
 
@@ -86,5 +72,5 @@ public class FotmServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-}
+    }}
+

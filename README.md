@@ -4,7 +4,9 @@ jlab - Flavour of the Month
 University of Helsinki Java assignment for "Javalabra 2013"
 
 Need to use a database for your program? This app will tell you which one to choose.
-Flavour of the Month parses Twitter feeds to determine what is your database of choice.
+Flavour of the Month (FOTM) parses Twitter feeds to determine what is your database of choice.
+The base functionality of FOTM is built upon the Twitter API 1.1, and it uses the twitter4j library.
+It runs a Java Servlet front-end, although the results don't necessarily have only limited use.
 
 
 # Instructions

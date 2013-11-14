@@ -20,5 +20,6 @@
     <body>
         <h1>Flavour of the Month</h1>
         <h2>Find out what it is!</h2>
+        <p>TestMessage: ${message}</p>
     </body>
 </html>

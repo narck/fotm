@@ -1,12 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package wad.jlab.logic;
 
 /**
  *
  * @author narck
+ * 
+ * EvaluatorServices simply provide some string to any user classes. 
+ * By this setting, using a privately scoped result is recommended.
  */
 public interface EvaluatorService {
     
