@@ -8,6 +8,8 @@ Flavour of the Month (FOTM) parses Twitter feeds to determine what is your datab
 The base functionality of FOTM is built upon the Twitter API 1.1, and it uses the twitter4j library.
 It runs a Java Servlet front-end, although the results don't necessarily have only limited use.
 
+# NOTE
+Due to Twitter API restrictions, Flavour of the "Month" will rather be "Week" in the future. This has no effect on the rest of the project.
 
 # Instructions
 To run the app, simply clone the source and run the following in jlab/:
@@ -19,7 +21,6 @@ $ java -jar target/dependency/jetty-runner.jar <--port number> /target/<war pack
 By default, the app runs at port 8080, so use localhost:8080. By specifying --port before the .war package, you can run it at any available port.
 
 TO-DO:
-* Core logic
-* API bindings
-* CLI component (portmapping)
-* Unit testing
+* Interval algorithm
+* Hackernews wildcard
+* Servlet
