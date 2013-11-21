@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import wad.jlab.logic.EvaluatorService;
 import wad.jlab.logic.TwitterEvaluator;
 
+
+
+// Javadoc tbi. This class is the GUI servlet frontend.
 @WebServlet(name = "FotmServlet", urlPatterns = {"/"})
 public class FotmServlet extends HttpServlet {
     
@@ -28,7 +31,7 @@ public class FotmServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         request.setAttribute("message", "asd"); // Call any interfaces' giveResult().
-      
+        // broken for the moment
         request.getRequestDispatcher("/index.jsp").forward(request, response);
         
     }
