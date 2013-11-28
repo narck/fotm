@@ -18,7 +18,7 @@ $ mvn clean package
 $ java -jar target/dependency/jetty-runner.jar <--port number> /target/<war package>.war
 ```
 
-By default, the app runs at port 8080, so use localhost:8080. By specifying --port before the .war package, you can run it at any available port. 
+By default, the app runs at port 8080, so use localhost:8080. By specifying --port before the .war package, you can run it at any available port. Maven Jetty plugin is also available, so you can use mvn jetty:run as well.
 
 If you need to test the app, you can register an app @ https://dev.twitter.com/
 
