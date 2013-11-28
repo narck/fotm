@@ -1,15 +1,22 @@
 package wad.jlab.logic;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetAddress;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ini4j.Ini;
 import twitter4j.Query;
 import twitter4j.QueryResult;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
+import wad.jlab.data.TwitterCache;
 
     /**
      * Evaluator service with Twitter integration. Uses twitter4j library for functionality.
@@ -29,6 +36,10 @@ public class TwitterEvaluator implements EvaluatorService {
      * Configparser tbi
      */
     
+    private Twitter api = new TwitterFactory().getInstance();
+    private TwitterCache cache;
+    
+    
     private String result;
     private boolean connection; // review
     
@@ -36,39 +47,29 @@ public class TwitterEvaluator implements EvaluatorService {
     private String consumerSecret;
     private String token;
     private String tokenSecret;
-    private Twitter twitter = TwitterFactory.getSingleton();
-    private QueryResult cache; //cache the results for some time
     
-    public TwitterEvaluator() {
+    public TwitterEvaluator()  {
         AccessToken at = new AccessToken("key","key",0L);
         
-        twitter.setOAuthConsumer("key", "key");
-        twitter.setOAuthAccessToken(at);
+        api.setOAuthConsumer("key", "key");
+        api.setOAuthAccessToken(at);
     }
     
     
-    //review
-//    public TwitterEvaluator(String ckey, String csecret, ) {
-//        this.consumerKey = ckey;
-//        this.consumerSecret = csecret;
-//    }
-//    
     /**
      * Helper method to determine if connection to service is available.
      * Notice that this is not required in the interface. This is purely
      * to determine TwitterEvaluator functionality. As such, twitter.com
      * queried by default.
+     * @param url
+     * @return 
      */
     public boolean checkConnection(String url) {
         
         try {
             InetAddress byUrl = InetAddress.getByName(url);
-            if (byUrl.isReachable(500)) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e){
+            return byUrl.isReachable(500);
+        } catch (IOException e){
             e.toString(); // Use default error, pass
             return false;
         }
@@ -86,34 +87,64 @@ public class TwitterEvaluator implements EvaluatorService {
     @Override
     public void evaluate() {
         
-        // Use a hashmap to store density
-        // NOTE: Only need to use locally for the moment
-        HashMap<String, Integer> hashtagDensity = new HashMap<String, Integer>();
+        /**
+         * Flow
+         * Get a list of tweets
+         * Get their respective scores
+         * Let algo decide the result
+         * Save into TwitterCache
+         * */
         
-        
-        // TBI
-        
-        // Due to Twitter API being too restrictive, and due to
-        // project scope the Twitter Stream API is a bit overkill.
-        // Here we parse the latest 100 tweets, and count the interval
-        // (or other viable method, consider a wildcard for slower streams
-        
-        
-        Query query = new Query("#hadoop");
-        query.setCount(100);
         try {
-            QueryResult result = twitter.search(query);
-            this.result = result.getTweets().get(0).getText(); //dummy return to check if its working
+            this.cache = new TwitterCache("#mongodb", getTweets("#mongodb")); // not final format, just to see if works
         } catch (TwitterException ex) {
-            Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //review
         }
+              
     }
     
-    public void getInterval() {
-        // returns the interval of tweets
+    /**
+     * Gets the most recent 100 tweets for any given hashtag.
+     * Twitter4j stores a list of tweets in a QueryResult-instance, available through
+     * getTweets().
+     * @param hashtag The hashtag to query
+     * @return Returns the list of 100 most recent tweets
+     * @throws TwitterException 
+     */
+    public List<Status> getTweets(String hashtag) throws TwitterException {
+        Query query = new Query(hashtag);
+        query.setCount(100);
+        
+        QueryResult result = api.search(query);
+        
+        List<Status> tweets = result.getTweets();
+        
+        return tweets;
+    }
+    /**
+     * Gets the datescore for a hashtag.
+     * Since the most popular tags get easily their full 100 tweets in ~3 days,
+     * we can count the days of month together to get an indicator which has the
+     * most recent tweets per 100 tweet range. If two or more hashtags hit the 
+     * top possible score (that means 100 tweets on the day of query, ie. all tweets
+     * on the same day), fallback to getDateScore().
+     * @param tagTweets a List<Status> you can get with getTweets().
+     * @return Integer of the score. Total maximum is 3100.
+     */
+    public static int getDateScore(List<Status> tagTweets) {
+        
+        int score = 0;
+        
+        Calendar cal = Calendar.getInstance();
+        for (Status status : tagTweets) {
+            cal.setTime(status.getCreatedAt());
+            score+=cal.get(Calendar.DAY_OF_MONTH);
+        }
+        
+        return score;
     }
     
-    
+
 
     public boolean isConnection() {
         return connection;
@@ -123,10 +154,23 @@ public class TwitterEvaluator implements EvaluatorService {
         this.connection = connection;
     }
 
+    
+    /**
+     * Interface compliant method.
+     * Returns the current cached result.
+     * If cache isn't set yet OR if cache has reached timeout
+     * it will cache a new result. Otherwise just increments the cacheTime.
+     * @return The current result in a String format.
+     */
     @Override
     public String giveResult() {
-        evaluate(); // call evaluate first to get
-        return result;
+        if (this.cache==null || this.cache.getCacheTimeout()==this.cache.getCacheTime()) {
+            evaluate();
+        } else {
+            this.cache.incrementCacheTime();
+        }
+        
+        return this.cache.getHashtag();
     }
     
 }

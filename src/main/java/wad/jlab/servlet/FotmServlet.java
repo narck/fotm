@@ -1,79 +1,19 @@
 package wad.jlab.servlet;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 import wad.jlab.logic.EvaluatorService;
 import wad.jlab.logic.TwitterEvaluator;
 
-
-
-// Javadoc tbi. This class is the GUI servlet frontend.
-@WebServlet(name = "FotmServlet", urlPatterns = {"/"})
-public class FotmServlet extends HttpServlet {
+@Controller
+public class FotmServlet {
     
-    private EvaluatorService fotm = new TwitterEvaluator();    
-    /**
-     * Processes requests for both HTTP
-     * <code>GET</code> and
-     * <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        
-        request.setAttribute("message", "asd"); // Call any interfaces' giveResult().
-        // broken for the moment
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
-        
+    private final EvaluatorService twitter = new TwitterEvaluator();
+    
+    @RequestMapping("*")
+    public String handleDefault(Model model) {
+        model.addAttribute("message", twitter.giveResult());
+        return "index";
     }
-
-    /**
-     * Handles the HTTP
-     * <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP
-     * <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }}
-
+}
