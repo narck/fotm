@@ -5,3 +5,7 @@
 14.11.2013 - 16-21 Coding, testing, class diagram,  Maven configuration
 20.11.2013 - 18-19 Twitter API research
 21.11.2013 - 20-22 Coding, Twitter API research
+23.11.2013 - 19-13 Twitter API research, coding
+25.11.2013 - Servlet configuring
+27.11.2013 - 16-20 Coding, UI setup
+
