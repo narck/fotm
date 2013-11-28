@@ -123,15 +123,15 @@ public class TwitterEvaluator implements EvaluatorService {
     }
     /**
      * Gets the datescore for a hashtag.
-     * Since the most popular tags get easily their full 100 tweets in ~3 days,
+     * Since the most popular tags easily get their full 100 tweets in ~3 days,
      * we can count the days of month together to get an indicator which has the
      * most recent tweets per 100 tweet range. If two or more hashtags hit the 
      * top possible score (that means 100 tweets on the day of query, ie. all tweets
-     * on the same day), fallback to getDateScore().
+     * on the same day), fallback to getTimeScore().
      * @param tagTweets a List<Status> you can get with getTweets().
      * @return Integer of the score. Total maximum is 3100.
      */
-    public static int getDateScore(List<Status> tagTweets) {
+    public int getDateScore(List<Status> tagTweets) {
         
         int score = 0;
         
@@ -143,7 +143,15 @@ public class TwitterEvaluator implements EvaluatorService {
         
         return score;
     }
-    
+
+    /**
+     * TBI. Returns a time based score for a list of tweets.
+     * @param tagTweets
+     * @return 
+     */
+    public int getTimeScore(List<Status> tagTweets) {
+        return 0;
+    }
 
 
     public boolean isConnection() {
