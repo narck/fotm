@@ -20,7 +20,7 @@ $ java -jar target/dependency/jetty-runner.jar <--port number> /target/<war pack
 
 By default, the app runs at port 8080, so use localhost:8080. By specifying --port before the .war package, you can run it at any available port. 
 
-If you need to test the app, you can register an app @ (https://dev.twitter.com/ "dev.twitter.com").
+If you need to test the app, you can register an app @ https://dev.twitter.com/
 
 TO-DO:
  * Wildcard?
