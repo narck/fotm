@@ -23,7 +23,7 @@ By default, the app runs at port 8080, so use localhost:8080. By specifying --po
 If you need to test the app, you can register an app @ (https://dev.twitter.com/ "dev.twitter.com").
 
 TO-DO:
-*Wildcard?
-*Finalize algorithm
-*Configparser
-*UI Styling
+ *Wildcard?
+ *Finalize algorithm
+ *Configparser
+ *UI Styling
