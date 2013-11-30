@@ -49,9 +49,9 @@ public class TwitterEvaluator implements EvaluatorService {
     private String tokenSecret;
     
     public TwitterEvaluator()  {
-        AccessToken at = new AccessToken("key","key",0L);
+        AccessToken at = new AccessToken("2194448208-lzULWRL1NWyXNGhgeaavhSJsIBUV7FktT9YX8R6","KNjfhWuTnuZmc1AjXmOWicOV9suBltkPMa7cn5fvbTpkq",0L);
         
-        api.setOAuthConsumer("key", "key");
+        api.setOAuthConsumer("DIuRo8AabG0MnyisgHEDQ", "hVjPptg21qsrf1d5TCcxEyWZHtxkuanoXWQ7WUICV4");
         api.setOAuthAccessToken(at);
     }
     
@@ -96,7 +96,7 @@ public class TwitterEvaluator implements EvaluatorService {
          * */
         
         try {
-            this.cache = new TwitterCache("#mongodb", getTweets("#mongodb")); // not final format, just to see if works
+            this.cache = new TwitterCache("#mongodb", getTweets("")); // not final format, just to see if works
         } catch (TwitterException ex) {
             Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //review
         }
