@@ -43,9 +43,9 @@ public class TwitterEvaluator implements EvaluatorService {
     
     
     public TwitterEvaluator()  {
-        AccessToken at = new AccessToken("2194448208-lzULWRL1NWyXNGhgeaavhSJsIBUV7FktT9YX8R6","KNjfhWuTnuZmc1AjXmOWicOV9suBltkPMa7cn5fvbTpkq",0L);
+        AccessToken at = new AccessToken("key","key",0L);
         
-        api.setOAuthConsumer("DIuRo8AabG0MnyisgHEDQ", "hVjPptg21qsrf1d5TCcxEyWZHtxkuanoXWQ7WUICV4");
+        api.setOAuthConsumer("key", "key");
         api.setOAuthAccessToken(at);
     }
     
@@ -103,7 +103,7 @@ public class TwitterEvaluator implements EvaluatorService {
             
         } catch (TwitterException ex) { 
             // consider placing empty cache to avoid crashes
-            this.cache = new TwitterCache("nothing found :I", new ArrayList<Status>());
+            this.cache = new TwitterCache("nothing found :I", null);
             Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //review
         }
               
