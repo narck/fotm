@@ -1,14 +1,13 @@
 package wad.jlab.logic;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ini4j.Ini;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -24,9 +23,7 @@ import wad.jlab.data.TwitterCache;
      * Use string returns.
      *
      * Notice: parameters are not mandatory. You can set them via constructor, 
-     * config file or you want. Config is recommended.
-     * @param ckey Twitter API Consumer key
-     * @param csecret Twitter API Consumer secret
+     * config file or you want. Config is recommended and TBI
      */
 public class TwitterEvaluator implements EvaluatorService {
     
@@ -38,15 +35,12 @@ public class TwitterEvaluator implements EvaluatorService {
     
     private Twitter api = new TwitterFactory().getInstance();
     private TwitterCache cache;
+    private final TwitterCrunch crunch = new TwitterCrunch();
     
     
     private String result;
     private boolean connection; // review
     
-    private String consumerKey;
-    private String consumerSecret;
-    private String token;
-    private String tokenSecret;
     
     public TwitterEvaluator()  {
         AccessToken at = new AccessToken("2194448208-lzULWRL1NWyXNGhgeaavhSJsIBUV7FktT9YX8R6","KNjfhWuTnuZmc1AjXmOWicOV9suBltkPMa7cn5fvbTpkq",0L);
@@ -79,8 +73,8 @@ public class TwitterEvaluator implements EvaluatorService {
      * Interface compliant method. Here we start the evaluation chain, 
      * and determine our class return value.
      * 
-     * Goes through a list of #hashtags, uses the getInterval() helper
-     * method to define tweet density for every hashstag, and compares them.
+     * Goes through a list of hashtags, uses the TwitterCrunch helper class
+     * to define tweet density for every hashstag.
      * If the results are too similar, TBI is the HackerNews parser service
      * + entropy if need be :)
      */
@@ -91,20 +85,32 @@ public class TwitterEvaluator implements EvaluatorService {
          * Flow
          * Get a list of tweets
          * Get their respective scores
-         * Let algo decide the result
+         * Let crunch decide the result
          * Save into TwitterCache
          * */
+        SortedMap<String, List<Status>> twidder = new TreeMap<>();
         
+        // not final format, just testing : )
         try {
-            this.cache = new TwitterCache("#mongodb", getTweets("")); // not final format, just to see if works
-        } catch (TwitterException ex) {
+            //twidder.put("#mongodb", getTweets("#mongodb"));
+            twidder.put("#redis", getTweets("#redis"));
+            twidder.put("#cassandra", getTweets("#cassandra"));
+            twidder.put("#mysql", getTweets("#mysql"));
+            twidder.put("#couchdb", getTweets("#couchdb"));
+            String keka = crunch.crunchTrendingTag(twidder);
+            
+            this.cache = new TwitterCache(keka, twidder.get(keka));
+            
+        } catch (TwitterException ex) { 
+            // consider placing empty cache to avoid crashes
+            this.cache = new TwitterCache("nothing found :I", new ArrayList<Status>());
             Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //review
         }
               
     }
     
     /**
-     * Gets the most recent 100 tweets for any given hashtag.
+     * Gets the most recent 100 (or less) tweets for any given hashtag.
      * Twitter4j stores a list of tweets in a QueryResult-instance, available through
      * getTweets().
      * @param hashtag The hashtag to query
@@ -121,39 +127,9 @@ public class TwitterEvaluator implements EvaluatorService {
         
         return tweets;
     }
-    /**
-     * Gets the datescore for a hashtag.
-     * Since the most popular tags easily get their full 100 tweets in ~3 days,
-     * we can count the days of month together to get an indicator which has the
-     * most recent tweets per 100 tweet range. If two or more hashtags hit the 
-     * top possible score (that means 100 tweets on the day of query, ie. all tweets
-     * on the same day), fallback to getTimeScore().
-     * @param tagTweets a List<Status> you can get with getTweets().
-     * @return Integer of the score. Total maximum is 3100.
-     */
-    public int getDateScore(List<Status> tagTweets) {
-        
-        int score = 0;
-        
-        Calendar cal = Calendar.getInstance();
-        for (Status status : tagTweets) {
-            cal.setTime(status.getCreatedAt());
-            score+=cal.get(Calendar.DAY_OF_MONTH);
-        }
-        
-        return score;
-    }
 
-    /**
-     * TBI. Returns a time based score for a list of tweets.
-     * @param tagTweets
-     * @return 
-     */
-    public int getTimeScore(List<Status> tagTweets) {
-        return 0;
-    }
-
-
+    
+    //review
     public boolean isConnection() {
         return connection;
     }

@@ -29,4 +29,4 @@ TO-DO:
 - [ ] Configparsing
 - [ ] UI Styling
 - [ ] Test refactors
-- [] Config cleanup
+- [ ] Config cleanup

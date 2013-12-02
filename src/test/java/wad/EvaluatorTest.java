@@ -1,8 +1,8 @@
 package wad;
 
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 import wad.jlab.logic.HitEvaluator;
 import wad.jlab.logic.TwitterEvaluator;
 
