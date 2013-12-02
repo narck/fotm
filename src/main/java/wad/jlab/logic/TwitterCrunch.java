@@ -100,18 +100,18 @@ public class TwitterCrunch {
     public String crunchTrendingTag(SortedMap<String, List<Status>> hashtagsAndTweets) {
         SortedMap<String, Integer> dateScores = new TreeMap<>();
         SortedMap<String, Integer> timeScores = new TreeMap<>();
-        String winner = "notfound"; //fallback
+        String winner = "notfound"; // you should not see this
 
         for (String hashtag : hashtagsAndTweets.keySet()) {
             List<Status> tweets = hashtagsAndTweets.get(hashtag);
-            removeOlderTweets(tweets); // invoke here to enable method testability
+            removeOlderTweets(tweets); // invoke here to enable testability
             dateScores.put(hashtag, getHashtagDateScore(tweets));
             timeScores.put(hashtag, getHashtagTimeScore(tweets));
         }
         
         if (checkIfDateCollision(hashtagsAndTweets)) {
             //add: remove hashtags lower than maximum
-            removeNonMaxScoreTags(hashtagsAndTweets, getMaxDateScore(dateScores));
+            //removeNonMaxScoreTags(hashtagsAndTweets, getMaxDateScore(dateScores)); // review
             winner = compareHashtags(timeScores); 
         } else {
             winner = compareHashtags(dateScores);
@@ -165,6 +165,7 @@ public class TwitterCrunch {
     
     /*
      * 123
+     * REVIEW
      */
     public Map<String, List<Status>> removeNonMaxScoreTags(Map<String, List<Status>> hashtagsAndTweets, int max) {
         
