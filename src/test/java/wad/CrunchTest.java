@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.junit.Test;
 import twitter4j.Status;
 import wad.data.TestStatus;
@@ -118,8 +120,71 @@ public class CrunchTest {
         assertEquals(0,emptyList.size());
     }
     
+    
     @Test
-    public void testResultCrunching1() {
+    public void testIfCollisionsCorrectWithCollisions() {
+        
+        Map<String, Integer> m1 = new TreeMap<>();
+        
+        m1.put("lel", 8);
+        m1.put("kek", 8);
+        assertEquals(true, tw.collisionsInDateScores(m1));
+    }
+    
+    @Test
+    public void testIfCollisionsCorrectWithNoCollisions() {
+        
+        Map<String, Integer> m1 = new TreeMap<>();
+        
+        m1.put("lel", 8);
+        m1.put("kek", 56);
+        assertEquals(false, tw.collisionsInDateScores(m1));
+    }
+    
+    @Test
+    public void testRemoveCorrectLowScores() {
+        Map<String, Integer> m1 = new TreeMap<>();
+        
+        m1.put("lel", 8);
+        m1.put("kek", 8);
+        m1.put("top", 5);
+        m1.put("niin", 3);
+        
+        assertEquals(2, tw.removeNonCollidingScores(m1).size());
+    }
+    
+    @Test
+    public void correctHighestIfAllDistinct() {
+         Map<String, Integer> m1 = new TreeMap<>();
+        
+        m1.put("lel", 2);
+        m1.put("kek", 1);
+        m1.put("lela", 5);
+        m1.put("keka", 3);
+        
+        tw.removeNonCollidingScores(m1);
+        int i = m1.get("lela");
+        assertEquals(5, i);
+        
+    }
+    
+    @Test
+    public void testResultCrunchingDates() {
+        
+    }
+    
+    @Test 
+    public void testResultCrunchingScores() {
+    
+    }
+    
+    @Test
+    public void testResultCrunchingComplete1() {
+    
+    }
+    
+    @Test
+    public void testResultCrunchingComplete2() {
         
     }
     

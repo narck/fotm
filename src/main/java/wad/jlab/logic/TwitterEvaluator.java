@@ -43,9 +43,9 @@ public class TwitterEvaluator implements EvaluatorService {
     
     
     public TwitterEvaluator()  {
-        AccessToken at = new AccessToken("key","key",0L);
+        AccessToken at = new AccessToken("","",0L);
         
-        api.setOAuthConsumer("key", "key");
+        api.setOAuthConsumer("", "");
         api.setOAuthAccessToken(at);
     }
     

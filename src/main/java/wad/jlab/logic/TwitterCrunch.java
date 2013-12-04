@@ -9,6 +9,7 @@ package wad.jlab.logic;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,6 +93,42 @@ public class TwitterCrunch {
         
         return tagTweets;
     }
+    
+    public Map<String, Integer> removeNonCollidingScores(Map<String, Integer> scores) {
+        int max = findMaxScore(scores.values());
+       
+        List<String> deletables = new ArrayList<>();
+        for (String hashtag : scores.keySet()) {
+            if (scores.get(hashtag)!=max) {
+                deletables.add(hashtag);
+            }
+        }
+        for (String hashtag : deletables) {
+            scores.remove(hashtag);
+        }
+        
+        
+        return scores;
+    }
+    
+
+    public int findMaxScore(Collection<Integer> scores) {
+        int max = 0;
+        
+        for (Integer i : scores) {
+            if (i>max) {
+                max=i;
+            }
+        }
+        
+        return max;
+    }
+
+    public boolean collisionsInDateScores(Map<String, Integer> dateScore) {
+        Set uniqueScores = new HashSet<>(dateScore.values());
+        return dateScore.size() != uniqueScores.size();
+    }
+    
     /*
      * The "main" method. Uses the helper methods to determine the result as String.
      * @param HashMap<String, List<Status>> A Map of hashtags and their latest tweets.
@@ -100,8 +137,11 @@ public class TwitterCrunch {
     public String crunchTrendingTag(SortedMap<String, List<Status>> hashtagsAndTweets) {
         SortedMap<String, Integer> dateScores = new TreeMap<>();
         SortedMap<String, Integer> timeScores = new TreeMap<>();
+        
+        
         String winner = "notfound"; // you should not see this
-
+        
+        // Populate scores
         for (String hashtag : hashtagsAndTweets.keySet()) {
             List<Status> tweets = hashtagsAndTweets.get(hashtag);
             removeOlderTweets(tweets); // invoke here to enable testability
@@ -109,7 +149,7 @@ public class TwitterCrunch {
             timeScores.put(hashtag, getHashtagTimeScore(tweets));
         }
         
-        if (checkIfDateCollision(hashtagsAndTweets)) {
+        if (collisionsInDateScores(dateScores)) {
             //add: remove hashtags lower than maximum
             //removeNonMaxScoreTags(hashtagsAndTweets, getMaxDateScore(dateScores)); // review
             winner = compareHashtags(timeScores); 
@@ -136,15 +176,6 @@ public class TwitterCrunch {
         return max;
     }
     
-    
-    /*
-     * javadoc
-     */
-    public boolean checkIfDateCollision(Map<String, List<Status>> hashtagsAndTweets) {
-        Set uniqueScores = hashtagsAndTweets.entrySet();
-        return hashtagsAndTweets.size()==uniqueScores.size();
-    }
-    
     /*
      * javadoc
      */
@@ -164,8 +195,7 @@ public class TwitterCrunch {
     
     
     /*
-     * 123
-     * REVIEW
+     * DEPRECATED
      */
     public Map<String, List<Status>> removeNonMaxScoreTags(Map<String, List<Status>> hashtagsAndTweets, int max) {
         
