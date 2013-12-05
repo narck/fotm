@@ -2,6 +2,7 @@ package wad.jlab.data;
 
 import java.util.Calendar;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import twitter4j.Status;
 
 /** 
@@ -11,6 +12,7 @@ import twitter4j.Status;
  */
 public class TwitterCache {
     
+    @Value("${message}")
     private String hashtag;
     private int monthFetched;
     private int dayFetched;
@@ -43,7 +45,7 @@ public class TwitterCache {
     }
 
     public String getHashtag() {
-        return hashtag;
+        return hashtag.substring(1); //return plaintext answer to simplify styling
     }
 
     public void setHashtag(String hashtag) {

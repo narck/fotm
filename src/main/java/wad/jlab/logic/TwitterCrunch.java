@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -24,9 +25,7 @@ import twitter4j.Status;
  */
 public class TwitterCrunch {
     
-    public TwitterCrunch() {
-    
-    }
+    public TwitterCrunch() {}
     
     /**
      * Gets the datescore for a hashtag.
@@ -52,7 +51,8 @@ public class TwitterCrunch {
     }
 
     /**
-     * TBI. Returns a time based score for a list of tweets.
+     * Computes the timescore of a list of tweets. This is done by simply adding 
+     * the hours of day together. Note that usually other tweets than tweets
      * @param tagTweets
      * @return 
      */
@@ -94,6 +94,14 @@ public class TwitterCrunch {
         return tagTweets;
     }
     
+    
+    /*
+     * Generic method to remove any tags from the scores that are do not collide
+     * with the maximum value,
+     * 
+     * @param Map<String, Integer> scores a generic Map score table.
+     * @return Map<String, Integer> scores with low scores removed.
+     */
     public Map<String, Integer> removeNonCollidingScores(Map<String, Integer> scores) {
         int max = findMaxScore(scores.values());
        
@@ -107,11 +115,32 @@ public class TwitterCrunch {
             scores.remove(hashtag);
         }
         
-        
         return scores;
     }
     
-
+    /*
+     * Special helper for the general flow.
+     * We need to remove the lower daily tags to compare the correct timescores,
+     * so we can use this method in the main crunchTrendingTag if there is collision in the
+     * dateScores method.
+     * 
+     * @params
+     */
+    public Map<String, Integer> removeNonCollidingTimeScores(Map<String, Integer> dateScores, Map<String, Integer> timeScores) {
+        int max = findMaxScore(dateScores.values());
+       
+        List<String> deletables = new ArrayList<>();
+        for (String hashtag : dateScores.keySet()) {
+            if (dateScores.get(hashtag)!=max) {
+                deletables.add(hashtag);
+            }
+        }
+        for (String hashtag : deletables) {
+            timeScores.remove(hashtag);
+        }
+        return timeScores;
+    }
+    
     public int findMaxScore(Collection<Integer> scores) {
         int max = 0;
         
@@ -119,12 +148,11 @@ public class TwitterCrunch {
             if (i>max) {
                 max=i;
             }
-        }
-        
+        }    
         return max;
     }
 
-    public boolean collisionsInDateScores(Map<String, Integer> dateScore) {
+    public boolean collisionsInScores(Map<String, Integer> dateScore) {
         Set uniqueScores = new HashSet<>(dateScore.values());
         return dateScore.size() != uniqueScores.size();
     }
@@ -138,7 +166,6 @@ public class TwitterCrunch {
         SortedMap<String, Integer> dateScores = new TreeMap<>();
         SortedMap<String, Integer> timeScores = new TreeMap<>();
         
-        
         String winner = "notfound"; // you should not see this
         
         // Populate scores
@@ -148,12 +175,16 @@ public class TwitterCrunch {
             dateScores.put(hashtag, getHashtagDateScore(tweets));
             timeScores.put(hashtag, getHashtagTimeScore(tweets));
         }
-        
-        if (collisionsInDateScores(dateScores)) {
-            //add: remove hashtags lower than maximum
-            //removeNonMaxScoreTags(hashtagsAndTweets, getMaxDateScore(dateScores)); // review
+        System.out.println("Determining tag...");
+        if (collisionsInScores(dateScores)) {
+            System.out.println("Datescores: "+  dateScores);
+            removeNonCollidingTimeScores(dateScores, timeScores);
+            System.out.println("Removing lower scores from timescores...");
+            System.out.println(timeScores);
             winner = compareHashtags(timeScores); 
         } else {
+            System.out.println("No datescore collisions!");
+            System.out.println(dateScores);
             winner = compareHashtags(dateScores);
         }
         
@@ -162,7 +193,7 @@ public class TwitterCrunch {
     
     
     /*
-     * 
+     * DEPRECATED
      */
     public int getMaxDateScore(Map<String, Integer> scores) {
         Collection<Integer> scoreList = scores.values();
@@ -177,38 +208,35 @@ public class TwitterCrunch {
     }
     
     /*
-     * javadoc
+     * Compares score maps together. Takes the first value in treemap, and traverses
+     * through the map comparing each scoremap to the leading score.
+     * 
+     * @param SortedMap<String, Integer> scores
      */
     public String compareHashtags(SortedMap<String, Integer> scores) {
+//        
+        Random r = new Random();
+        String leader = scores.firstKey(); 
         
-        String leader = scores.firstKey();
+        if (collisionsInScores(scores)) {
+            Set<String> keys = scores.keySet();
+            String[] keysArray = new String[0];
+            keysArray = keys.toArray(keysArray);
+            String randomKey = keysArray[r.nextInt(keysArray.length) ];
+            return randomKey;
+        }
         
+        
+        int leadingScore = 0;
         for (String hashtag : scores.keySet()) {
             if (scores.get(hashtag) > scores.get(leader)) {
                 if (scores.get(hashtag) > scores.get(leader)) {
                     leader = hashtag;
+                    leadingScore = scores.get(hashtag);
                 }
             }
         }
-        return leader;
-    }
-    
-    
-    /*
-     * DEPRECATED
-     */
-    public Map<String, List<Status>> removeNonMaxScoreTags(Map<String, List<Status>> hashtagsAndTweets, int max) {
         
-        ArrayList<String> deletables = new ArrayList<>(); 
-        for (String hashtag : hashtagsAndTweets.keySet()) {
-            if (getHashtagDateScore(hashtagsAndTweets.get(hashtag))!=max) {
-                deletables.add(hashtag);
-            }
-        }
-        for (String deleteTag : deletables) {
-            hashtagsAndTweets.remove(deleteTag);
-        }
-        return hashtagsAndTweets;
-    
+        return leader;
     }
 }

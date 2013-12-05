@@ -43,9 +43,9 @@ public class TwitterEvaluator implements EvaluatorService {
     
     
     public TwitterEvaluator()  {
-        AccessToken at = new AccessToken("","",0L);
+        AccessToken at = new AccessToken("consumer key","consumer secret",0L);
         
-        api.setOAuthConsumer("", "");
+        api.setOAuthConsumer("access token", "access token secret");
         api.setOAuthAccessToken(at);
     }
     
@@ -81,18 +81,11 @@ public class TwitterEvaluator implements EvaluatorService {
     @Override
     public void evaluate() {
         
-        /**
-         * Flow
-         * Get a list of tweets
-         * Get their respective scores
-         * Let crunch decide the result
-         * Save into TwitterCache
-         * */
         SortedMap<String, List<Status>> twidder = new TreeMap<>();
         
         // not final format, just testing : )
         try {
-            //twidder.put("#mongodb", getTweets("#mongodb"));
+            twidder.put("#mongodb", getTweets("#mongodb"));
             twidder.put("#redis", getTweets("#redis"));
             twidder.put("#cassandra", getTweets("#cassandra"));
             twidder.put("#mysql", getTweets("#mysql"));
@@ -103,7 +96,7 @@ public class TwitterEvaluator implements EvaluatorService {
             
         } catch (TwitterException ex) { 
             // consider placing empty cache to avoid crashes
-            this.cache = new TwitterCache("nothing found :I", null);
+            this.cache = new TwitterCache("noresult", null);
             Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //review
         }
               

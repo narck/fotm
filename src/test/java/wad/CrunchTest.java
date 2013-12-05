@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package wad;
 
 import java.util.ArrayList;
@@ -9,15 +5,13 @@ import static org.junit.Assert.*;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import org.junit.Test;
 import twitter4j.Status;
 import wad.data.TestStatus;
 import wad.jlab.logic.TwitterCrunch;
-/**
- *
- * @author narck
- */
+
 public class CrunchTest {
     
     private TwitterCrunch tw = new TwitterCrunch();
@@ -126,9 +120,9 @@ public class CrunchTest {
         
         Map<String, Integer> m1 = new TreeMap<>();
         
-        m1.put("lel", 8);
-        m1.put("kek", 8);
-        assertEquals(true, tw.collisionsInDateScores(m1));
+        m1.put("mongo", 8);
+        m1.put("maria", 8);
+        assertEquals(true, tw.collisionsInScores(m1));
     }
     
     @Test
@@ -136,19 +130,19 @@ public class CrunchTest {
         
         Map<String, Integer> m1 = new TreeMap<>();
         
-        m1.put("lel", 8);
-        m1.put("kek", 56);
-        assertEquals(false, tw.collisionsInDateScores(m1));
+        m1.put("mongo", 8);
+        m1.put("maria", 56);
+        assertEquals(false, tw.collisionsInScores(m1));
     }
     
     @Test
     public void testRemoveCorrectLowScores() {
         Map<String, Integer> m1 = new TreeMap<>();
         
-        m1.put("lel", 8);
-        m1.put("kek", 8);
-        m1.put("top", 5);
-        m1.put("niin", 3);
+        m1.put("redis", 8);
+        m1.put("mongo", 8);
+        m1.put("maria", 5);
+        m1.put("hadoop", 3);
         
         assertEquals(2, tw.removeNonCollidingScores(m1).size());
     }
@@ -157,35 +151,128 @@ public class CrunchTest {
     public void correctHighestIfAllDistinct() {
          Map<String, Integer> m1 = new TreeMap<>();
         
-        m1.put("lel", 2);
-        m1.put("kek", 1);
-        m1.put("lela", 5);
-        m1.put("keka", 3);
+        m1.put("redis", 2);
+        m1.put("mongo", 1);
+        m1.put("maria", 5);
+        m1.put("hadoop", 3);
         
         tw.removeNonCollidingScores(m1);
-        int i = m1.get("lela");
+        int i = m1.get("maria");
         assertEquals(5, i);
         
     }
     
     @Test
-    public void testResultCrunchingDates() {
+    public void removeTimeScoresCorrectly() {
+         Map<String, Integer> m1 = new TreeMap<>();
+         Map<String, Integer> m2 = new TreeMap<>();
+        //datescores
+        m1.put("redis", 2);
+        m1.put("mongo", 1);
+        m1.put("maria", 5);
+        m1.put("hadoop", 5);
+        //timescores
+        m2.put("redis", 2);
+        m2.put("mongo", 1);
+        m2.put("maria", 5);
+        m2.put("hadoop", 2);
         
-    }
-    
-    @Test 
-    public void testResultCrunchingScores() {
-    
+        int i = tw.removeNonCollidingTimeScores(m1, m2).size();
+        assertEquals(2, i);
+         
     }
     
     @Test
-    public void testResultCrunchingComplete1() {
-    
+    public void hashtagComparison() {
+        
+        SortedMap<String, Integer> m1 = new TreeMap<>();
+        SortedMap<String, Integer> m2 = new TreeMap<>();
+        SortedMap<String, Integer> m3 = new TreeMap<>();
+        m1.put("redis", 2);
+        m1.put("mongo", 1);
+        m1.put("maria", 7);
+        m1.put("hadoop", 17);
+        
+        // note that by timescore collision random tag is selected: not testable so only test without collisions
+        
+        assertEquals("hadoop", tw.compareHashtags(m1));
+        
     }
     
     @Test
-    public void testResultCrunchingComplete2() {
+    public void testResultCrunching() {
+        
+        // first entry with datescores and timescores
+        // datescores
+        cal.set(Calendar.DAY_OF_MONTH,20);
+        cal.set(Calendar.HOUR_OF_DAY,20);
+        Status d1 = new TestStatus(cal.getTime());
+        List<Status> dateList = new ArrayList<>();
+        dateList.add(d1);
+        
+        cal.set(Calendar.DAY_OF_MONTH,20);
+        cal.set(Calendar.HOUR_OF_DAY,19);
+        Status d2 = new TestStatus(cal.getTime());    
+        dateList.add(d2);
+        
+        // second entries
+        
+        cal.set(Calendar.DAY_OF_MONTH,10);
+        cal.set(Calendar.HOUR_OF_DAY,20);
+        Status n1 = new TestStatus(cal.getTime());
+        List<Status> dateList2 = new ArrayList<>();
+        dateList2.add(n1);
+        
+        cal.set(Calendar.DAY_OF_MONTH,10);
+        cal.set(Calendar.HOUR_OF_DAY,20);
+        Status n2 = new TestStatus(cal.getTime());    
+        dateList2.add(n2);
+        
+        SortedMap<String, List<Status>> tags = new TreeMap<>();
+        tags.put("redis", dateList);
+        tags.put("mongo", dateList2);
+        
+        assertEquals("redis",tw.crunchTrendingTag(tags));
         
     }
+    
+    @Test
+    public void testResultCrunchingDatesColliding() {
+        
+        // first entry with datescores and timescores
+        // datescores
+        cal.set(Calendar.DAY_OF_MONTH,10);
+        cal.set(Calendar.HOUR_OF_DAY,20);
+        Status d1 = new TestStatus(cal.getTime());
+        List<Status> dateList = new ArrayList<>();
+        dateList.add(d1);
+        
+        cal.set(Calendar.DAY_OF_MONTH,10);
+        cal.set(Calendar.HOUR_OF_DAY,19);
+        Status d2 = new TestStatus(cal.getTime());    
+        dateList.add(d2);
+        
+        // second entries
+        
+        cal.set(Calendar.DAY_OF_MONTH,10);
+        cal.set(Calendar.HOUR_OF_DAY,20);
+        Status n1 = new TestStatus(cal.getTime());
+        List<Status> dateList2 = new ArrayList<>();
+        dateList2.add(n1);
+        
+        cal.set(Calendar.DAY_OF_MONTH,10);
+        cal.set(Calendar.HOUR_OF_DAY,20);
+        Status n2 = new TestStatus(cal.getTime());    
+        dateList2.add(n2);
+        
+        SortedMap<String, List<Status>> tags = new TreeMap<>();
+        tags.put("redis", dateList);
+        tags.put("mongo", dateList2);
+        
+        assertEquals("mongo",tw.crunchTrendingTag(tags));
+        
+    }
+    
+    
     
 }

@@ -8,4 +8,7 @@
 23.11.2013 - 19-13 Twitter API research, coding
 25.11.2013 - Servlet configuring
 27.11.2013 - 16-20 Coding, UI setup
-2.11.2013 - 20-24 Coding
+2.11.2013 - 20-24 Coding, unit testing, documentation
+3.11.2013 - 19-20 Coding, unit testing, documentation
+4.11.2013 - 17-18 Testing, Spring, UI styling
+5.11.2013 - 14-16 Spring, UI styling, documentation
