@@ -1,4 +1,4 @@
-package wad.jlab.logic;
+package wad.jlab.service;
 
 /**
  *

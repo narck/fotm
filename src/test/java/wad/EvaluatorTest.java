@@ -3,8 +3,8 @@ package wad;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
-import wad.jlab.logic.HitEvaluator;
-import wad.jlab.logic.TwitterEvaluator;
+import wad.jlab.service.HitEvaluator;
+import wad.jlab.service.TwitterEvaluator;
 
 public class EvaluatorTest {
         

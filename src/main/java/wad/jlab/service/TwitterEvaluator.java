@@ -1,5 +1,6 @@
-package wad.jlab.logic;
+package wad.jlab.service;
 
+import wad.jlab.service.EvaluatorService;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import wad.jlab.data.TwitterCache;
+import wad.jlab.logic.TwitterCrunch;
 
     /**
      * Evaluator service with Twitter integration. Uses twitter4j library for functionality.
@@ -43,9 +45,9 @@ public class TwitterEvaluator implements EvaluatorService {
     
     
     public TwitterEvaluator()  {
-        AccessToken at = new AccessToken("consumer key","consumer secret",0L);
+        AccessToken at = new AccessToken("","",0L);
         
-        api.setOAuthConsumer("access token", "access token secret");
+        api.setOAuthConsumer("", "");
         api.setOAuthAccessToken(at);
     }
     
@@ -90,6 +92,9 @@ public class TwitterEvaluator implements EvaluatorService {
             twidder.put("#cassandra", getTweets("#cassandra"));
             twidder.put("#mysql", getTweets("#mysql"));
             twidder.put("#couchdb", getTweets("#couchdb"));
+            twidder.put("#mariadb", getTweets("#mariadb"));
+            twidder.put("#postgresql", getTweets("#postgresql"));
+            //twidder.put("#hadoop", getTweets("#hadoop"));
             String keka = crunch.crunchTrendingTag(twidder);
             
             this.cache = new TwitterCache(keka, twidder.get(keka));

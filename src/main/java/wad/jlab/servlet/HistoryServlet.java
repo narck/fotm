@@ -7,24 +7,22 @@ package wad.jlab.servlet;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import wad.jlab.logic.EvaluatorService;
-import wad.jlab.logic.TwitterEvaluator;
+import wad.jlab.service.EvaluatorService;
+import wad.jlab.service.TwitterEvaluator;
 
 /**
  *
  * @author narck
  */
-public class HistoryServlet {
-    
-    @Controller
-    public class FotmServlet {
+@Controller
+    public class HistoryServlet {
 
         private final EvaluatorService twitter = new TwitterEvaluator();
 
-        @RequestMapping("*")
+        @RequestMapping("/history")
         public String handleDefault(Model model) {
-            model.addAttribute("history", twitter.giveResult());
-            return "index";
+            model.addAttribute("history","active");
+            model.addAttribute("message", twitter.giveResult());
+            return "history";
         }
     }
-}
