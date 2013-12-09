@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
     <head>
@@ -35,8 +36,8 @@
                 
                
             }
-            .fitem {
-                padding-right: 50px;
+            span.glyphicon-ok {
+                margin-right: 3%;
             }
             
             h1.small {
@@ -62,28 +63,26 @@
 
       <div class="jumbotron">
         <h1 class="small">Flavour of the Now</h1>
+        <c:choose>
+            <c:when test="${message == 'oresult'}">
+                <h2>Cannot determine result. Maybe the cache is empty?</h2>
+            </c:when>
+
+            <c:otherwise>
+                <img class="logo" src="<spring:message code="${message}.image"/>" />
+                <h2>Notable features:</h2>  
+
+                <div class="feature">
+                    <p><span class="glyphicon glyphicon-ok"></span><spring:message code="${message}.feature1"/></p>
+                    <p><span class="glyphicon glyphicon-ok "></span><spring:message code="${message}.feature2"/></p>
+                    <p><span class="glyphicon glyphicon-ok"></span><spring:message code="${message}.feature3"/></p>
+                </div>
+            </c:otherwise>
+        </c:choose>
+                
         
-        <img class="logo" src="<spring:message code="${message}.image" arguments="${message}"/>" />
-        <h2>Notable features:</h2>  
-        
-        <div class="feature">
-            <p><span class="glyphicon glyphicon-ok fitem"></span><spring:message code="${message}.feature1" arguments="${message}"/></p>
-            <p><span class="glyphicon glyphicon-ok fitem"></span><spring:message code="${message}.feature2" arguments="${message}"/></p>
-            <p><span class="glyphicon glyphicon-ok fitem"></span><spring:message code="${message}.feature3" arguments="${message}"/></p>
-</div>
       </div>
 
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-        </div>
 
 
       <div class="footer">

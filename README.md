@@ -8,7 +8,7 @@ Flavour of the Now (FOTN) parses Twitter feeds to determine what is your databas
 It runs a Java Servlet front-end, although the results don't necessarily have only limited use. Users primarily make requests to the servlet, when the core logic does its work behind the scenes. 
 
 # NOTE
-Due to Twitter API restrictions, Flavour of the "Month" will rather be "Now" in the future. This has no effect on the rest of the project. Scope has been increased to include a stub SpringMVC configuration.
+Ycombinator component has been redacted.
 
 # Instructions
 To run the app, simply clone the source and run the following in jlab/:
@@ -22,8 +22,4 @@ By default, the app runs at port 8080, so use localhost:8080. By specifying --po
 If you need to test the app, you can register an app @ https://dev.twitter.com/
 
 TO-DO:
-- REST
-- History
-- Wildcard?
-- Configparsing
-- Config cleanup
+

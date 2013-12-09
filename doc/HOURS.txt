@@ -12,3 +12,5 @@
 3.11.2013 - 19-20 Coding, unit testing, documentation
 4.11.2013 - 17-18 Testing, Spring, UI styling
 5.11.2013 - 14-16 Spring, UI styling, documentation
+8.11.2013 - 22-24 Coding, UI styling
+9.11.2013 - 12-13 Coding

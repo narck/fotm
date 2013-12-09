@@ -70,7 +70,7 @@ public class TwitterCrunch {
         return score;
     }
 
-    /*
+    /**
      * Remove all tweets from this month.
      * To get reliable results, suppress any other months than the ongoing one.
      * 
@@ -95,7 +95,7 @@ public class TwitterCrunch {
     }
     
     
-    /*
+    /**
      * Generic method to remove any tags from the scores that are do not collide
      * with the maximum value,
      * 
@@ -118,13 +118,13 @@ public class TwitterCrunch {
         return scores;
     }
     
-    /*
+    /**
      * Special helper for the general flow.
      * We need to remove the lower daily tags to compare the correct timescores,
      * so we can use this method in the main crunchTrendingTag if there is collision in the
      * dateScores method.
      * 
-     * @params
+     * @params 
      */
     public Map<String, Integer> removeNonCollidingTimeScores(Map<String, Integer> dateScores, Map<String, Integer> timeScores) {
         int max = findMaxScore(dateScores.values());
@@ -157,7 +157,7 @@ public class TwitterCrunch {
         return dateScore.size() != uniqueScores.size();
     }
     
-    /*
+    /**
      * The "main" method. Uses the helper methods to determine the result as String.
      * @param HashMap<String, List<Status>> A Map of hashtags and their latest tweets.
      * 
@@ -207,7 +207,7 @@ public class TwitterCrunch {
         return max;
     }
     
-    /*
+    /**
      * Compares score maps together. Takes the first value in treemap, and traverses
      * through the map comparing each scoremap to the leading score.
      * 

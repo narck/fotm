@@ -1,4 +1,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,6 +37,11 @@
             h1.small {
                 
                 font-size: 2.5em;
+                
+            }
+            
+            span.glyphicon-stop {
+                margin-right: 3%;
             }
             
             
@@ -51,24 +58,32 @@
         <h3 class="text-muted">History</h3>
       </div>
 
+        
+        
       <div class="jumbotron">
         <h1 class="small">Flavour of the Month</h1>
         
-        <img class="logo" src="<spring:message code="${message}.image" arguments="${message}"/>" />
+        <c:choose>
+            <c:when test="${month == 'oresult'}">
+                <h2>Cannot determine result. Maybe the cache is empty?</h2>
+            </c:when>
+
+            <c:otherwise>
+                <img class="logo" src="<spring:message code="${month}.image"/>"/>
+                
+                <h2>Latest results: </h2>
+                <c:forEach var="item" items="${histItems}">
+                    <p><span class="glyphicon glyphicon-stop"></span><spring:message code="${item.hashtag}.title"/> - fetched <fmt:formatDate value="${item.dateFetched}" pattern="E, dd-MM-yy 'at' HH:mm" /></p>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
+        
+        
+       
+        
+        
 
       </div>
-
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-        </div>
 
 
       <div class="footer">

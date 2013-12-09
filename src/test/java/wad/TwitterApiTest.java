@@ -1,13 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package wad;
 
-/**
- *
- * @author narck
- */
+import org.junit.Test;
+
 public class TwitterApiTest {
     
+    @Test
+    public void test() {
+    
+    }
 }

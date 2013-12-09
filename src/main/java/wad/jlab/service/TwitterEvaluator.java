@@ -1,14 +1,15 @@
 package wad.jlab.service;
 
-import wad.jlab.service.EvaluatorService;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ini4j.Ini;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -16,39 +17,56 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
-import wad.jlab.data.TwitterCache;
 import wad.jlab.logic.TwitterCrunch;
+import wad.jlab.repo.TwitterHistory;
 
     /**
      * Evaluator service with Twitter integration. Uses twitter4j library for functionality.
      * The class evaluates the 1. trending hashtag of the month, and can return it for later usage.
      * Use string returns.
      *
-     * Notice: parameters are not mandatory. You can set them via constructor, 
-     * config file or you want. Config is recommended and TBI
+     * API keys are set in the default constructor 
+     * via the apiconfig.ini located in src/main/resources/config/apiconfig.ini
+     * Use it to set your keys
      */
 public class TwitterEvaluator implements EvaluatorService {
     
-    /**
-     * You can set these via any method you deem sane. 
-     * Recommend using configparser shipped with this snapshot.
-     * Configparser tbi
-     */
-    
     private Twitter api = new TwitterFactory().getInstance();
-    private TwitterCache cache;
-    private final TwitterCrunch crunch = new TwitterCrunch();
-    
-    
+    private TwitterHistory history = new TwitterHistory();
     private String result;
+    private final TwitterCrunch crunch = new TwitterCrunch();
+    private final String[] queryHashtags =  {
+        "#hadoop", 
+        "#redis",
+        "#mongodb",
+        "#cassandra",
+        "#postgresql",
+        "#couchdb",
+        "#mysql"};
+    
     private boolean connection; // review
     
     
+    /*
+     * Default constructor. Use try-cactch to avoid bleed exception declaration
+     */
     public TwitterEvaluator()  {
-        AccessToken at = new AccessToken("","",0L);
         
-        api.setOAuthConsumer("", "");
-        api.setOAuthAccessToken(at);
+        Ini ini = new Ini();
+        try {
+            File config = new File("src/main/resources/config/apiconfig.ini");
+            ini.load(new FileReader(config));
+            Ini.Section consumer = ini.get("consumer");
+            Ini.Section access = ini.get("access");
+                
+            AccessToken at = new AccessToken(access.get("token"),access.get("secret"),0L);
+        
+            api.setOAuthConsumer(consumer.get("key"), consumer.get("secret"));
+            api.setOAuthAccessToken(at);
+            
+        } catch (Exception e) {
+            System.out.println("Configuration not found");
+        }
     }
     
     
@@ -58,7 +76,7 @@ public class TwitterEvaluator implements EvaluatorService {
      * to determine TwitterEvaluator functionality. As such, twitter.com
      * queried by default.
      * @param url
-     * @return 
+     * @return boolean 
      */
     public boolean checkConnection(String url) {
         
@@ -77,31 +95,26 @@ public class TwitterEvaluator implements EvaluatorService {
      * 
      * Goes through a list of hashtags, uses the TwitterCrunch helper class
      * to define tweet density for every hashstag.
-     * If the results are too similar, TBI is the HackerNews parser service
-     * + entropy if need be :)
+     * 
+     * Set the desired hashtags in the class attribute queryHashtags.
+     * NOTE: The result is not semantic, so consider what tags you use if you want to 
+     * query something specific!
      */
     @Override
     public void evaluate() {
+        SortedMap<String, List<Status>> tweetMap = new TreeMap<>();
         
-        SortedMap<String, List<Status>> twidder = new TreeMap<>();
-        
-        // not final format, just testing : )
+     
         try {
-            twidder.put("#mongodb", getTweets("#mongodb"));
-            twidder.put("#redis", getTweets("#redis"));
-            twidder.put("#cassandra", getTweets("#cassandra"));
-            twidder.put("#mysql", getTweets("#mysql"));
-            twidder.put("#couchdb", getTweets("#couchdb"));
-            twidder.put("#mariadb", getTweets("#mariadb"));
-            twidder.put("#postgresql", getTweets("#postgresql"));
-            //twidder.put("#hadoop", getTweets("#hadoop"));
-            String keka = crunch.crunchTrendingTag(twidder);
+            for (String hashtag : queryHashtags) {
+                tweetMap.put(hashtag, getTweets(hashtag));
+            }
+            String result = crunch.crunchTrendingTag(tweetMap);
             
-            this.cache = new TwitterCache(keka, twidder.get(keka));
+            this.result = result;
             
-        } catch (TwitterException ex) { 
-            // consider placing empty cache to avoid crashes
-            this.cache = new TwitterCache("noresult", null);
+        } catch (TwitterException ex) {
+            this.result = "noresult";
             Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //review
         }
               
@@ -135,24 +148,16 @@ public class TwitterEvaluator implements EvaluatorService {
     public void setConnection(boolean connection) {
         this.connection = connection;
     }
-
+    
     
     /**
      * Interface compliant method.
-     * Returns the current cached result.
-     * If cache isn't set yet OR if cache has reached timeout
-     * it will cache a new result. Otherwise just increments the cacheTime.
+     * Simply returns the latest result. Evaluation and caching have been moved to
+     * TwitterHistory and controller level.
      * @return The current result in a String format.
      */
     @Override
     public String giveResult() {
-        if (this.cache==null || this.cache.getCacheTimeout()==this.cache.getCacheTime()) {
-            evaluate();
-        } else {
-            this.cache.incrementCacheTime();
-        }
-        
-        return this.cache.getHashtag();
+        return this.result;
     }
-    
 }
