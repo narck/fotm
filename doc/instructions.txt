@@ -1,0 +1,8 @@
+# Instructions
+If you do not have Maven, download it. You can also use a bundled Maven if you use some IDE like NetBeans. You can run the app through the IDE as well, if you have a server like Tomcat installed.
+
+If you already have Maven, to run the app, you need simply clone the source and run the following in jlab/:
+$ mvn clean package
+$ java -jar target/dependency/jetty-runner.jar <--port {number}> target/<war package>.war
+
+After jetty-runner is launched (you see SelectChannelConnector@0.0.0.0:8080 STARTING), open your browser at localhost:8080.

@@ -1,11 +1,7 @@
 package wad.jlab.data;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
-import twitter4j.Status;
 
 /** 
  * Simple data class to store the latest winning result.
@@ -13,25 +9,31 @@ import twitter4j.Status;
  * @param hashtag Simply provide the hashtag. Everything else is generated.
  */
 public class TwitterCache {
-    
-    @Value("${message}")
+    /**
+     * The hashtag as a string, with leading hash.
+     */
     private String hashtag;
+    /**
+     * The date when this cache entry was created.
+     */
     private Date dateFetched;
-    private Date formattedDate;
+    /**
+     * These two are just to enable testing by hand if you need them.
+     */
     private int cacheTimeout = 5;
     private int cacheTime = 0;
-    private List<Status> tweets;
     
+    
+    /**
+     * Constructs the new cache and sets a date to it. Cachetime is for testing if needed.
+     * @param hashtag as a string object.
+     */
     public TwitterCache(String hashtag) {
-        this(hashtag,new ArrayList());
-    }
-    
-    public TwitterCache(String hashtag, List<Status> tweets) {
         this.hashtag=hashtag;
         this.dateFetched = Calendar.getInstance().getTime();
-        this.tweets=tweets;
         this.cacheTime+=1;
     }
+    
 
     public int getCacheTimeout() {
         return cacheTimeout;
@@ -44,15 +46,26 @@ public class TwitterCache {
     public int getCacheTime() {
         return cacheTime;
     }
-    
+    /**
+     * Increments the current cachetime.
+     */
     public void incrementCacheTime() {
         this.cacheTime+=1;
     }
 
+    /**
+     * To access the locale properties we pass a substring by default to the servlet.
+     * 
+     * @return String the hashtag without leading hash.
+     */
     public String getHashtag() {
         return hashtag.substring(1); //return plaintext answer to simplify styling
     }
     
+    /**
+     * Returns the hashtag with leading hash. This is used for caching purposes in the history level.
+     * @return String hashtag with leading hash.
+     */
     public String getHashtagWithHash() {
         return hashtag;
     }
@@ -65,12 +78,16 @@ public class TwitterCache {
         return dateFetched;
     }
     
-    //change into f ull hour timeout
+    /**
+     * Returns whether the cache has timed out or not.
+     * Currently checks if over an hour has passed since the last query. This is to avoid getting rate-limited.
+     * @return boolean timeout value.
+     */
     public boolean hasTimedOut() {
         //return true; // enable to test per hand
         Calendar cachetime = Calendar.getInstance();
         cachetime.setTime(dateFetched);
-        return cachetime.get(Calendar.MINUTE) != Calendar.getInstance().get(Calendar.MINUTE); 
+        return cachetime.get(Calendar.HOUR_OF_DAY) != Calendar.getInstance().get(Calendar.HOUR_OF_DAY); 
     }
     
     

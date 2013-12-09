@@ -1,0 +1,10 @@
+Flavour of the Now (jlab) was a University of Helsinki Java assignment for "Javalabra 2013".
+
+Need to use a database for your program? This app will tell you which one to choose.
+Flavour of the Now (FOTN) parses Twitter feeds to determine what is your database of choice. The base functionality of the app is built upon the Twitter API 1.1, and it uses the twitter4j library.
+
+FOTN gets a list of hashtags with a list of their tweets, and calculates which one is the top #1 trending of the bunch, which is then returned to the user. These results are then cached for later requests, and a new Twitter API request is not made until the cache times out.
+
+Users consists of anyone making a request. In this version, users only make requests and receive a view based on the result.
+
+Of course, while the results are accurate, you should not take the descriptions of the features seriously, they are meant to be satire :).

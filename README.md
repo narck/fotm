@@ -1,4 +1,4 @@
-jlab - Flavour of the Now (formerly Month)
+jlab - Flavour of the Now
 ====
 
 University of Helsinki Java assignment for "Javalabra 2013"
@@ -16,10 +16,7 @@ To run the app, simply clone the source and run the following in jlab/:
 $ mvn clean package
 $ java -jar target/dependency/jetty-runner.jar <--port {number}> target/<war package>.war
 ```
-
-By default, the app runs at port 8080, so use localhost:8080. By specifying --port before the .war package, you can run it at any available port. Maven Jetty plugin is also included, so you can use mvn jetty:run as well.
+After jetty-runner is launched, open your browser at localhost:8080.
+By specifying --port before the .war package, you can run it at any available port. Maven Jetty plugin is also included, so you can use mvn jetty:run as well.
 
 If you need to test the app, you can register an app @ https://dev.twitter.com/
-
-TO-DO:
-

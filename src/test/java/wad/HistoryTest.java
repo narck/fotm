@@ -1,5 +1,7 @@
 package wad;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import org.junit.Test;
 import wad.jlab.data.TwitterCache;
 import wad.jlab.repo.TwitterHistory;
@@ -21,9 +23,6 @@ public class HistoryTest {
         th.addToHistory(new TwitterCache("#kek"));
         th.addToHistory(new TwitterCache("#lel"));
         
-        //System.out.println(th.getHistory());
-        //System.out.println(th.getMonth());
-        
         assertEquals("asd", th.getMonthsTrending().getHashtag());
     }
     
@@ -33,11 +32,34 @@ public class HistoryTest {
         for (int i = 0; i < 30; i++) {
             th.addToHistory(new TwitterCache("#lel"));
         }
-        //assertEquals(25,th.getTruncated().size());
+        assertEquals(10,th.getTruncated().size());
     }
     
     @Test
     public void reversedListCorrect() {
+        ArrayList<TwitterCache> l = new ArrayList<>();
+        l.add(new TwitterCache("asd"));
+        l.add(new TwitterCache("asdf"));
+        l.add(new TwitterCache("asdg"));
+        
+        
+        for (TwitterCache twitterCache : l) {
+            th.addToHistory(twitterCache);  
+        }
+        
+        Collections.reverse(l);
+        assertEquals(l, th.getTruncated());
+        
+    }
+    
+    @Test
+    
+    public void limitExceededCorrectly() {
+        for (int i = 0; i < 101; i++) {
+            th.addToHistory(new TwitterCache("#lel"));
+        }
+        
+        assertEquals(100,th.getHistory().size());
         
     }
     

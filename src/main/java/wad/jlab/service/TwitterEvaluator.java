@@ -2,8 +2,6 @@ package wad.jlab.service;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -31,10 +29,21 @@ import wad.jlab.repo.TwitterHistory;
      */
 public class TwitterEvaluator implements EvaluatorService {
     
+    /**
+     * The Twitter API binding class from the twitter4j library.
+     */
     private Twitter api = new TwitterFactory().getInstance();
-    private TwitterHistory history = new TwitterHistory();
+    /**
+     * Temporarily stored result of numbercrunching. This is returned to the servlet as is.
+     */
     private String result;
+    /**
+     * The logic cruncher class to help evaluate results. Use to comply to SRP.
+     */
     private final TwitterCrunch crunch = new TwitterCrunch();
+    /**
+     * The hashtags we want to query. Passed to a map later, you can edit this at will.
+     */
     private final String[] queryHashtags =  {
         "#hadoop", 
         "#redis",
@@ -44,17 +53,18 @@ public class TwitterEvaluator implements EvaluatorService {
         "#couchdb",
         "#mysql"};
     
-    private boolean connection; // review
-    
-    
-    /*
-     * Default constructor. Use try-cactch to avoid bleed exception declaration
+  
+    /**
+     * Default constructor. Use try-catch to avoid bleeding exception declaration
+     * 
+     * Try-catch for the configparser - it logs an error if it cannot find a suitable .ini.
+     * Since error handling is logged and the servlet has it's own error logic, we don't need to terminate.
      */
     public TwitterEvaluator()  {
         
         Ini ini = new Ini();
         try {
-            File config = new File("src/main/resources/config/apiconfig.ini");
+            File config = new File("src/main/resources/config/api.ini");
             ini.load(new FileReader(config));
             Ini.Section consumer = ini.get("consumer");
             Ini.Section access = ini.get("access");
@@ -70,31 +80,13 @@ public class TwitterEvaluator implements EvaluatorService {
     }
     
     
-    /**
-     * Helper method to determine if connection to service is available.
-     * Notice that this is not required in the interface. This is purely
-     * to determine TwitterEvaluator functionality. As such, twitter.com
-     * queried by default.
-     * @param url
-     * @return boolean 
-     */
-    public boolean checkConnection(String url) {
-        
-        try {
-            InetAddress byUrl = InetAddress.getByName(url);
-            return byUrl.isReachable(500);
-        } catch (IOException e){
-            e.toString(); // Use default error, pass
-            return false;
-        }
-    }
     
     /**
      * Interface compliant method. Here we start the evaluation chain, 
      * and determine our class return value.
      * 
-     * Goes through a list of hashtags, uses the TwitterCrunch helper class
-     * to define tweet density for every hashstag.
+     * Goes through a list of hashtags, puts them in a Map of <Hashtag, Tweetlist>
+     * and gives the Map to TwitterCrunch. Sets the current result as based on TwitterCrunch result.
      * 
      * Set the desired hashtags in the class attribute queryHashtags.
      * NOTE: The result is not semantic, so consider what tags you use if you want to 
@@ -104,26 +96,24 @@ public class TwitterEvaluator implements EvaluatorService {
     public void evaluate() {
         SortedMap<String, List<Status>> tweetMap = new TreeMap<>();
         
-     
         try {
             for (String hashtag : queryHashtags) {
-                tweetMap.put(hashtag, getTweets(hashtag));
+                tweetMap.put(hashtag, getTweets(hashtag)); 
             }
             String result = crunch.crunchTrendingTag(tweetMap);
-            
-            this.result = result;
+            this.result = result;   
             
         } catch (TwitterException ex) {
-            this.result = "noresult";
-            Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //review
-        }
-              
+            this.result = "noresult"; // VITAL, this will get passed if there is no connection or other error
+            Logger.getLogger(TwitterEvaluator.class.getName()).log(Level.SEVERE, null, ex); //logged to serverlog
+        }  
     }
     
     /**
      * Gets the most recent 100 (or less) tweets for any given hashtag.
      * Twitter4j stores a list of tweets in a QueryResult-instance, available through
      * getTweets().
+     * 
      * @param hashtag The hashtag to query
      * @return Returns the list of 100 most recent tweets
      * @throws TwitterException 
@@ -138,17 +128,6 @@ public class TwitterEvaluator implements EvaluatorService {
         
         return tweets;
     }
-
-    
-    //review
-    public boolean isConnection() {
-        return connection;
-    }
-
-    public void setConnection(boolean connection) {
-        this.connection = connection;
-    }
-    
     
     /**
      * Interface compliant method.

@@ -1,0 +1,17 @@
+The class structure is as follows:
+
+# FotmServlet (in Servlet)
+FotmServlet is the user-facing class. It handles all requests.
+It also contains the TwitterEvaluator service and the TwitterHistory repository, to which it communicates. It passes data to TwitterHistory for caching.
+
+# TwitterHistory (in Repo)
+Simply a list repository of cached tweets. It gives results based on the repository status, such as latest result, this month's favourite, and can return a list for other classes to use. Uses TwitterCache objects to store into the cache.
+
+# TwitterEvaluator implements EvaluatorService (in Service)
+This class is responsible for communicating with the Twitter API. It sends requests, gets responses and sends the responses for evaluation to TwitterCrunch. It passes data as a String object further to the servlet.
+
+#TwitterCrunch (in Logic)
+This class is a helper class for TwitterEvaluator, to determine which hashtag is the top trending #1 of a list of hashtags, based on their latest 100 tweets. Only TwitterEvaluator has access to this class.
+
+#TwitterCache (in Data)
+A simple datatype to store a hashtag and a Date when the cache was set. Used in TwitterHistory.

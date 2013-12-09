@@ -55,7 +55,7 @@
       <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="${now}"><a href="${pageContext.request.contextPath}/">Now</a></li>
-          <li class="${history}"><a href="${pageContext.request.contextPath}/history">Month</a></li>
+          <li class="${history}"><a href="${pageContext.request.contextPath}/history">History</a></li>
           <li class="${about}"><a href="${pageContext.request.contextPath}/about">About</a></li>
         </ul>
         <h3 class="text-muted">Now</h3>
@@ -65,7 +65,7 @@
         <h1 class="small">Flavour of the Now</h1>
         <c:choose>
             <c:when test="${message == 'oresult'}">
-                <h2>Cannot determine result. Maybe the cache is empty?</h2>
+                <h2>Cannot determine result.</h2>
             </c:when>
 
             <c:otherwise>
@@ -86,7 +86,7 @@
 
 
       <div class="footer">
-        <p>narck@github.com</p>
+        <p><a href="https://github.com/narck">narck</a></p>
       </div>
 
     </div> <!-- /container -->

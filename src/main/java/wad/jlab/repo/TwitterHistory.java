@@ -15,18 +15,25 @@ import wad.jlab.data.TwitterCache;
  */
 @Repository
 public class TwitterHistory {
-    
+    /**
+     * The actual repository, a simple ArrayList object.
+     */
     private ArrayList<TwitterCache> history = new ArrayList<>();
     
     public TwitterHistory() {}
     
+    /**
+     * Adds cache objects to the repo. Removes the first if limit is exceeded.
+     * @param entry a TwitterCache object to add to repo.
+     */
     public void addToHistory(TwitterCache entry) {
         history.add(entry);
         if (history.size()>100) {
             history.remove(0);
         }
     }
-
+    
+    
     public ArrayList<TwitterCache> getHistory() {
         return history;
     }
@@ -34,8 +41,9 @@ public class TwitterHistory {
     
     /**
      * Truncated list for the servlet. 
-     * To keep the view clean, we reverse the actual history and truncate it to 25.
-     * Return the original if the list is less than 25 in length.
+     * To keep the view clean, we reverse the actual history and truncate it to 10.
+     * Return the original if the list is less than 10 in length.
+     * 
      * @return List<TwitterCache> a truncated+reversed list of current history
      */
     public List<TwitterCache> getTruncated() {
@@ -43,16 +51,18 @@ public class TwitterHistory {
         listForServlet.addAll(history);
         Collections.reverse(listForServlet);
         
-        if (listForServlet.size() <= 5) {
+        if (listForServlet.size() <= 10) {
             return listForServlet;
         } 
-        return listForServlet.subList(0, 5);
+        return listForServlet.subList(0, 10);
     }
     
     
     /**
      * Get the newest cache. Null if the list is empty.
-     * @return TwitterCache latest
+     * The controller uses this null return to determine some of its logic.
+     * 
+     * @return TwitterCache latest cache object
      */
     public TwitterCache getLatest() {
         if (history.size()==0) {
@@ -60,7 +70,6 @@ public class TwitterHistory {
         } else {
             return history.get(history.size()-1);
         }
-        
     }
     
     /**
@@ -69,16 +78,7 @@ public class TwitterHistory {
      * @return TwitterCache this months trending hashtag
      */
     public TwitterCache getMonthsTrending() {
-        Map<String, Integer> counts = new HashMap<String, Integer>();
-
-        for (TwitterCache t : history) {
-            String tag = t.getHashtagWithHash();
-            if (counts.containsKey(tag)) {
-                counts.put(tag, counts.get(tag) + 1);
-            } else {
-                counts.put(tag, 1);
-            }
-        }
+        Map<String, Integer> counts = generateCountMap();
         
         int max = 0;
         String winner = null;
@@ -93,7 +93,24 @@ public class TwitterHistory {
         } else {
             return null;
         }
-        
+    }
+    
+    /**
+     * Helper method to shorten getMonthsTrending().
+     * @return Map<String, Integer> map of tag entry counts in the list
+     */
+    public Map<String, Integer> generateCountMap() {
+        Map<String, Integer> counts = new HashMap<String, Integer>();
+
+        for (TwitterCache t : history) {
+            String tag = t.getHashtagWithHash();
+            if (counts.containsKey(tag)) {
+                counts.put(tag, counts.get(tag) + 1);
+            } else {
+                counts.put(tag, 1);
+            }
+        }
+        return counts;
     }
 }
     

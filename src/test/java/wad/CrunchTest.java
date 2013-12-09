@@ -16,17 +16,7 @@ public class CrunchTest {
     
     private TwitterCrunch tw = new TwitterCrunch();
     private Calendar cal = Calendar.getInstance();
-    @Test
-    public void tryTimeScore() {
-        
-        cal.set(Calendar.MONTH,10);
-        Status s1 = new TestStatus(cal.getTime());
-        cal.set(Calendar.MONTH, 5);
-        Status s2 = new TestStatus(cal.getTime());
-        
-        //ignore
-        
-    }
+    
     
     @Test
     public void testDateScore() {
@@ -133,33 +123,6 @@ public class CrunchTest {
         m1.put("mongo", 8);
         m1.put("maria", 56);
         assertEquals(false, tw.collisionsInScores(m1));
-    }
-    
-    @Test
-    public void testRemoveCorrectLowScores() {
-        Map<String, Integer> m1 = new TreeMap<>();
-        
-        m1.put("redis", 8);
-        m1.put("mongo", 8);
-        m1.put("maria", 5);
-        m1.put("hadoop", 3);
-        
-        assertEquals(2, tw.removeNonCollidingScores(m1).size());
-    }
-    
-    @Test
-    public void correctHighestIfAllDistinct() {
-         Map<String, Integer> m1 = new TreeMap<>();
-        
-        m1.put("redis", 2);
-        m1.put("mongo", 1);
-        m1.put("maria", 5);
-        m1.put("hadoop", 3);
-        
-        tw.removeNonCollidingScores(m1);
-        int i = m1.get("maria");
-        assertEquals(5, i);
-        
     }
     
     @Test
@@ -272,7 +235,4 @@ public class CrunchTest {
         assertEquals("mongo",tw.crunchTrendingTag(tags));
         
     }
-    
-    
-    
 }

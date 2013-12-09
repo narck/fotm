@@ -52,7 +52,7 @@
       <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="${now}"><a href="${pageContext.request.contextPath}/">Now</a></li>
-          <li class="${history}"><a href="${pageContext.request.contextPath}/history">Month</a></li>
+          <li class="${history}"><a href="${pageContext.request.contextPath}/history">History</a></li>
           <li class="${about}"><a href="${pageContext.request.contextPath}/about">About</a></li>
         </ul>
         <h3 class="text-muted">History</h3>
@@ -87,7 +87,7 @@
 
 
       <div class="footer">
-        <p>narck@github.com</p>
+        <p><a href="https://github.com/narck">narck</a></p>
       </div>
 
     </div> <!-- /container -->

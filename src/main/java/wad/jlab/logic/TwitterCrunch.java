@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package wad.jlab.logic;
 
@@ -20,8 +15,8 @@ import twitter4j.Status;
 
 /**
  * A helper class for TwitterEvaluator. 
- * Just instantiate and use.
- * @author narchie
+ * 
+ * Takes
  */
 public class TwitterCrunch {
     
@@ -53,28 +48,26 @@ public class TwitterCrunch {
     /**
      * Computes the timescore of a list of tweets. This is done by simply adding 
      * the hours of day together. Note that usually other tweets than tweets
-     * @param tagTweets
-     * @return 
+     * @param tagTweets a List<Status> you can get with getTweets().
+     * @return Integer value of a score.
      */
     public int getHashtagTimeScore(List<Status> tagTweets) {
-        
         int score = 0;
         Calendar cal = Calendar.getInstance();
         
         for (Status status : tagTweets) {
             cal.setTime(status.getCreatedAt());
             score+=cal.get(Calendar.HOUR_OF_DAY);
-            //score+=cal.get(Calendar.MINUTE/2); // review
         }
-        
         return score;
     }
 
     /**
-     * Remove all tweets from this month.
+     * Remove all tweets from this not this month.
      * To get reliable results, suppress any other months than the ongoing one.
      * 
      * @param List<Status> tagTweets A list of Status objects.
+     * @return The list without tweets from previous months.
      */
     public List<Status> removeOlderTweets(List<Status> tagTweets) {
         Calendar currentDay = Calendar.getInstance();
@@ -94,37 +87,14 @@ public class TwitterCrunch {
         return tagTweets;
     }
     
-    
-    /**
-     * Generic method to remove any tags from the scores that are do not collide
-     * with the maximum value,
-     * 
-     * @param Map<String, Integer> scores a generic Map score table.
-     * @return Map<String, Integer> scores with low scores removed.
-     */
-    public Map<String, Integer> removeNonCollidingScores(Map<String, Integer> scores) {
-        int max = findMaxScore(scores.values());
-       
-        List<String> deletables = new ArrayList<>();
-        for (String hashtag : scores.keySet()) {
-            if (scores.get(hashtag)!=max) {
-                deletables.add(hashtag);
-            }
-        }
-        for (String hashtag : deletables) {
-            scores.remove(hashtag);
-        }
-        
-        return scores;
-    }
-    
     /**
      * Special helper for the general flow.
      * We need to remove the lower daily tags to compare the correct timescores,
      * so we can use this method in the main crunchTrendingTag if there is collision in the
      * dateScores method.
      * 
-     * @params 
+     * @params Map<String, Integer> dateScores, Map<String, Integer> timeScores
+     * @return The timescore table with the non-colliding (lower) scores removed.
      */
     public Map<String, Integer> removeNonCollidingTimeScores(Map<String, Integer> dateScores, Map<String, Integer> timeScores) {
         int max = findMaxScore(dateScores.values());
@@ -141,9 +111,13 @@ public class TwitterCrunch {
         return timeScores;
     }
     
+    /**
+     * Returns the highest value from a Collection.
+     * @param scores
+     * @return The highest value in the collection.
+     */
     public int findMaxScore(Collection<Integer> scores) {
         int max = 0;
-        
         for (Integer i : scores) {
             if (i>max) {
                 max=i;
@@ -152,6 +126,11 @@ public class TwitterCrunch {
         return max;
     }
 
+    /**
+     * Checks whether there are two identical dateScores in the flow by making a valueset.
+     * @param Map<String, Integer> dateScore
+     * @return boolean value
+     */
     public boolean collisionsInScores(Map<String, Integer> dateScore) {
         Set uniqueScores = new HashSet<>(dateScore.values());
         return dateScore.size() != uniqueScores.size();
@@ -159,74 +138,47 @@ public class TwitterCrunch {
     
     /**
      * The "main" method. Uses the helper methods to determine the result as String.
-     * @param HashMap<String, List<Status>> A Map of hashtags and their latest tweets.
+     * Toggle comments to see them in the server log. They help a lot when debugging the fetched results.
      * 
+     * @param HashMap<String, List<Status>> A Map of hashtags and their latest tweets.
+     * @return A string of the most popular hashtag.
      */
     public String crunchTrendingTag(SortedMap<String, List<Status>> hashtagsAndTweets) {
         SortedMap<String, Integer> dateScores = new TreeMap<>();
         SortedMap<String, Integer> timeScores = new TreeMap<>();
         
         String winner = "notfound"; // you should not see this
+        populateScores(dateScores, timeScores, hashtagsAndTweets);
         
-        // Populate scores
-        for (String hashtag : hashtagsAndTweets.keySet()) {
-            List<Status> tweets = hashtagsAndTweets.get(hashtag);
-            removeOlderTweets(tweets); // invoke here to enable testability
-            dateScores.put(hashtag, getHashtagDateScore(tweets));
-            timeScores.put(hashtag, getHashtagTimeScore(tweets));
-        }
-        System.out.println("Determining tag...");
+        //System.out.println("Determining tag...");
         if (collisionsInScores(dateScores)) {
-            System.out.println("Datescores: "+  dateScores);
+            //System.out.println("Datescores: "+  dateScores);
             removeNonCollidingTimeScores(dateScores, timeScores);
-            System.out.println("Removing lower scores from timescores...");
-            System.out.println(timeScores);
+            //System.out.println("Removing lower scores from timescores...");
+            //System.out.println(timeScores);
             winner = compareHashtags(timeScores); 
         } else {
-            System.out.println("No datescore collisions!");
-            System.out.println(dateScores);
+            //System.out.println("No datescore collisions!");
+            //System.out.println(dateScores);
             winner = compareHashtags(dateScores);
         }
         
         return winner;
     }
     
-    
-    /*
-     * DEPRECATED
-     */
-    public int getMaxDateScore(Map<String, Integer> scores) {
-        Collection<Integer> scoreList = scores.values();
-        int max = 0;
-        for (Integer i : scoreList) {
-            if (i>max) {
-                max=i;
-            }
-        }
-        
-        return max;
-    }
-    
     /**
-     * Compares score maps together. Takes the first value in treemap, and traverses
+     * Compares score mappings together. Takes the first value in treemap, and traverses
      * through the map comparing each scoremap to the leading score.
      * 
      * @param SortedMap<String, Integer> scores
+     * @return The string of the most trending tag.
      */
     public String compareHashtags(SortedMap<String, Integer> scores) {
-//        
-        Random r = new Random();
-        String leader = scores.firstKey(); 
+        String leader = scores.firstKey();
         
         if (collisionsInScores(scores)) {
-            Set<String> keys = scores.keySet();
-            String[] keysArray = new String[0];
-            keysArray = keys.toArray(keysArray);
-            String randomKey = keysArray[r.nextInt(keysArray.length) ];
-            return randomKey;
+            return getRandomFromScores(scores);
         }
-        
-        
         int leadingScore = 0;
         for (String hashtag : scores.keySet()) {
             if (scores.get(hashtag) > scores.get(leader)) {
@@ -236,7 +188,41 @@ public class TwitterCrunch {
                 }
             }
         }
-        
         return leader;
+    }
+    
+    
+
+    /**
+     * Helper method to shorten the main method. 
+     * @see crunchTrendingTag()
+     * Simply populates the scoremaps given.
+     * @param dateScores
+     * @param timeScores
+     * @param hashtagsAndTweets 
+     * 
+     */
+    private void populateScores(SortedMap<String, Integer> dateScores, SortedMap<String, Integer> timeScores, SortedMap<String, List<Status>> hashtagsAndTweets) {
+        // Populate scores
+        for (String hashtag : hashtagsAndTweets.keySet()) {
+            List<Status> tweets = hashtagsAndTweets.get(hashtag);
+            removeOlderTweets(tweets); // invoke here to enable testability
+            dateScores.put(hashtag, getHashtagDateScore(tweets));
+            timeScores.put(hashtag, getHashtagTimeScore(tweets));
+        }
+    }
+
+    /**
+     * Helper method to shorten the compare 
+     * @param scores
+     * @return Random element from scoremap
+     */
+    private String getRandomFromScores(SortedMap<String, Integer> scores) {
+            Random r = new Random();
+            Set<String> keys = scores.keySet();
+            String[] keysArray = new String[0];
+            keysArray = keys.toArray(keysArray);
+            String randomKey = keysArray[r.nextInt(keysArray.length) ];
+            return randomKey;
     }
 }
