@@ -44,6 +44,16 @@
                 margin-right: 3%;
             }
             
+            .feature {
+                display:block;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: left;
+                width: 80%;
+                
+               
+            }
+            
             
         </style>
     </head>
@@ -72,9 +82,11 @@
                 <img class="logo" src="<spring:message code="${month}.image"/>"/>
                 
                 <h2>Latest results: </h2>
+                <div class="feature">
                 <c:forEach var="item" items="${histItems}">
-                    <p><span class="glyphicon glyphicon-stop"></span><spring:message code="${item.hashtag}.title"/> - fetched <fmt:formatDate value="${item.dateFetched}" pattern="E, dd-MM-yy 'at' HH:mm" /></p>
+                    <p><span class="glyphicon glyphicon-stop"></span><spring:message code="${item.hashtag}.title"/> - fetched <fmt:formatDate value="${item.dateFetched}" pattern="E, dd-MM-yy 'at' HH" /></p>
                 </c:forEach>
+                </div>
             </c:otherwise>
         </c:choose>
         

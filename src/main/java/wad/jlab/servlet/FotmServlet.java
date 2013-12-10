@@ -34,14 +34,20 @@ public class FotmServlet {
      */
     private final EvaluatorService twitter = new TwitterEvaluator();
     
+    /**
+     * The thread which checks for cache timeouts and updates it when it has.
+     */
     private final UpdaterThread thread = new UpdaterThread(history, twitter);
+    
+    
     
     /**
      * Mapping for the "now" page. If cache has timed out, fetches a new result with 
      * TwitterEvaluator. Use setCache() method for saving new caches to the repository.
      * 
-     * In general, checks if the history is empty, and caches a new result everytime a 
-     * cache timeout occurs.
+     * The evaluation function is now running in another thread. This is to avoid stressing
+     * the server when a cache timeout occurs within. Thread is checked on most GET requests so 
+     * it's safe to browse.
      * 
      * Note that an "oresult" string is passed to the model if errors occur within core logic.
      * 
@@ -51,23 +57,22 @@ public class FotmServlet {
      */
     @RequestMapping(value="/", method=RequestMethod.GET)
     public String getNow(Model model) {
-        System.out.println("get initted");
-        if (!threadStarted) {
-            System.out.println("starting thread");
-            setNewCache().getHashtag();
-            System.out.println("got result");
-            threadStarted=true;
-            System.out.println("boolean set");
-            Runnable r = thread;
-            Thread thread = new Thread(r);
-            thread.start();
-        }
-        
-        System.out.println("thread started");
+        threadCheck();
         
         model.addAttribute("message", history.getLatest().getHashtag());
         model.addAttribute("now", "active");
         return "index";
+    }
+    
+    public void threadCheck() {
+        System.out.println("thread check");
+        if (!threadStarted) {
+            setNewCache().getHashtag();
+            threadStarted=true;
+            Runnable r = thread;
+            Thread thread = new Thread(r);
+            thread.start();
+        }
     }
     
     
@@ -85,26 +90,18 @@ public class FotmServlet {
     
     /**
      * Controller for the history view. 
-     * Check first if there's a new cache object. Passes an "oresult" to the model
-     * if it finds an empty repo.
+     * Check first if there's a new cache object. 
+     * 
      * @param model
      * @return path to a .jsp view
      */
     @RequestMapping(value="/history", method=RequestMethod.GET)
         public String getHistory(Model model) {
-            TwitterCache month = history.getMonthsTrending();
-            List<TwitterCache> hist = history.getTruncated(); 
-            if (month==null) {
-                model.addAttribute("month", "oresult");
-                return "history";
-            }
-            
+            threadCheck();
             
             model.addAttribute("month", history.getMonthsTrending().getHashtag());  
-            model.addAttribute("histItems", hist);
+            model.addAttribute("histItems", history.getTruncated());
             
-            
-            //history.getMonthsTrending();
             model.addAttribute("history","active");
             return "history";
         }
@@ -112,7 +109,7 @@ public class FotmServlet {
     
     /**
      * Controller for the about page.
-     * Just activates the bootstrap link.
+     * 
      * @param model
      * @return .jsp view
      */
@@ -130,6 +127,7 @@ public class FotmServlet {
     @RequestMapping(value="/now.json", method=RequestMethod.GET)
     @ResponseBody 
     public String getJsonNow() {
+        threadCheck();
         return history.getLatest().getHashtagWithHash();
     }
     /**
@@ -139,6 +137,7 @@ public class FotmServlet {
     @RequestMapping(value="/month.json", method=RequestMethod.GET)
     @ResponseBody
     public String getJsonMonth() {
+        threadCheck();
         return history.getMonthsTrending().getHashtagWithHash();
     }
 }

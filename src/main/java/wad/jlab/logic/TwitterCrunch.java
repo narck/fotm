@@ -83,7 +83,6 @@ public class TwitterCrunch {
         for (Status status : deletables) {
             tagTweets.remove(status);
         }
-        
         return tagTweets;
     }
     
@@ -150,16 +149,16 @@ public class TwitterCrunch {
         String winner = "notfound"; // you should not see this
         populateScores(dateScores, timeScores, hashtagsAndTweets);
         
-        //System.out.println("Determining tag...");
+        System.out.println("Determining tag...");
         if (collisionsInScores(dateScores)) {
-            //System.out.println("Datescores: "+  dateScores);
+             System.out.println("Datescores: "+  dateScores);
             removeNonCollidingTimeScores(dateScores, timeScores);
-            //System.out.println("Removing lower scores from timescores...");
-            //System.out.println(timeScores);
+             System.out.println("Removing lower scores from timescores...");
+             System.out.println(timeScores);
             winner = compareHashtags(timeScores); 
         } else {
-            //System.out.println("No datescore collisions!");
-            //System.out.println(dateScores);
+             System.out.println("No datescore collisions!");
+             System.out.println(dateScores);
             winner = compareHashtags(dateScores);
         }
         

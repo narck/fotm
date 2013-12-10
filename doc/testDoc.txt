@@ -2,6 +2,7 @@ Test Documentation
 ====
 
 There were some challenges regarding testing. At first, while I was building the servlet, I didn't have a lot of tests, because there was no real core logic. After familiarising myself with the Twitter API, I had to quickly jump into the testing section, which helped me greatly in the end.
+I tried to make the threading class as simple as possible. It runs the same method as the servlet would normally run, so I tested it by hand.
 
 Lots of things in Spring had to be tested by hand. 
 

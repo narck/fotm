@@ -9,17 +9,24 @@ import java.util.logging.Logger;
 import wad.jlab.data.TwitterCache;
 import wad.jlab.repo.TwitterHistory;
 
+
 /**
- *
- * @author narck
+ * Helping thread. Checks whether there is need to update cache, and updates 
+ * if there is. Takes the object pointers from the servlet as an argument and updates them.
  */
-
-
 public class UpdaterThread implements Runnable {
 
+    /**
+     * The servlet's history and api handler
+     */
     private TwitterHistory history;
     private EvaluatorService twitter;
     
+    /**
+     * Pass the servlet's history and api handler here 
+     * @param history
+     * @param twitter 
+     */
     public UpdaterThread(TwitterHistory history, EvaluatorService twitter) {
         this.history=history;
         this.twitter=twitter;
