@@ -64,10 +64,14 @@ public class FotmServlet {
         return "index";
     }
     
+    /**
+     * Launch the thread if it's not running.
+     * Invoke at GET requests to verify that cache has something.
+     */
     public void threadCheck() {
         System.out.println("thread check");
         if (!threadStarted) {
-            setNewCache().getHashtag();
+            setNewCache().getHashtag(); //populate cache so thread can continue working
             threadStarted=true;
             Runnable r = thread;
             Thread thread = new Thread(r);

@@ -35,15 +35,19 @@ public class UpdaterThread implements Runnable {
     
     @Override
     public void run() {
+        System.out.println("Thread started");
         while(true) {
-            if (history.getLatest().hasTimedOut()) {
-                twitter.evaluate();
-                history.addToHistory(new TwitterCache(twitter.giveResult()));
-                try {
-                    Thread.sleep(60000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(UpdaterThread.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                Thread.currentThread().sleep(60000);
+                System.out.println("Checking cache...");
+                if (history.getLatest().hasTimedOut()) {
+                    twitter.evaluate();
+                    history.addToHistory(new TwitterCache(twitter.giveResult()));
+                
+                    
                 }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(UpdaterThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     

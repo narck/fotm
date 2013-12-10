@@ -15,3 +15,4 @@
 8.11.2013 - 22-24 Coding, UI styling
 9.11.2013 - 12-13 Coding
 9.11.2013 - 18-24 Coding, testing, JavaDoc+other documents, final touches
+10.11.2013 - 10-13 Documentation, finishing touches

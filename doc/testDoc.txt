@@ -2,9 +2,13 @@ Test Documentation
 ====
 
 There were some challenges regarding testing. At first, while I was building the servlet, I didn't have a lot of tests, because there was no real core logic. After familiarising myself with the Twitter API, I had to quickly jump into the testing section, which helped me greatly in the end.
-I tried to make the threading class as simple as possible. It runs the same method as the servlet would normally run, so I tested it by hand.
+I tried to make the threading class as simple as possible. It runs the same method as the servlet would normally run, so I tested it by hand. 
+
+Threading also made the servlet tests fail randomly, which is why the tests are not in the final build.
 
 Lots of things in Spring had to be tested by hand. 
+
+There is a minor bug with initialising the program - sometimes the result gets cached twice when run the first time.
 
 # CrunchTest
 Testing saved lots of time in this class. I did have another Java program just to test the number crunching coming from the Twitter API, but with unit tests I was able to build reliable methods to determine the trending hashtag. I also had to create a TestStatus class to be able to test this class, since the base Status class from twitter4j did not have a mutable Status class.
@@ -13,9 +17,6 @@ The final test (when scores collide up until timescores) is based on randomness,
 
 # HistoryTest
 I was having some odd in this class before fixing it with unit tests. The core logic of this class is a lot simpler, so there is not that much to test.
-
-# ServletTest
-As there is not much going on on the view side, just testing if the servlet launches properly was the only thing of use I could really think of, since otherwise there would be a system issue the admin would have to review.
 
 # CacheTest
 Once again, a very simple class with just actually a string and a Date object. Mostly to just test whether they are set correctly.
