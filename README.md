@@ -20,3 +20,5 @@ After jetty-runner is launched, open your browser at localhost:8080.
 By specifying --port before the .war package, you can run it at any available port. Maven Jetty plugin is also included, so you can use mvn jetty:run as well.
 
 If you need to test the app, you can register an app @ https://dev.twitter.com/
+
+See a live version at http://fotm.random.fi
