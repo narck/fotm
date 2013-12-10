@@ -132,7 +132,8 @@ public class FotmServlet {
     @ResponseBody 
     public String getJsonNow() {
         threadCheck();
-        return history.getLatest().getHashtagWithHash();
+        String jsonString = "{\"fotn\" : \"" + history.getLatest().getHashtagWithHash() + "\"}";
+        return jsonString;
     }
     /**
      * REST mapping for getting Fotm
@@ -142,6 +143,7 @@ public class FotmServlet {
     @ResponseBody
     public String getJsonMonth() {
         threadCheck();
-        return history.getMonthsTrending().getHashtagWithHash();
+        String jsonString = "{\"fotm\" : \"" + history.getMonthsTrending().getHashtagWithHash() + "\"}";
+        return jsonString;
     }
 }
