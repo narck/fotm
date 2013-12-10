@@ -4,6 +4,7 @@
  */
 package wad.jlab.service;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import wad.jlab.data.TwitterCache;
@@ -38,12 +39,12 @@ public class UpdaterThread implements Runnable {
         System.out.println("Thread started");
         while(true) {
             try {
-                Thread.currentThread().sleep(60000);
+                TimeUnit.MINUTES.sleep(30);
                 System.out.println("Checking cache...");
                 if (history.getLatest().hasTimedOut()) {
                     twitter.evaluate();
                     history.addToHistory(new TwitterCache(twitter.giveResult()));
-                
+                    System.out.println("Finished.");
                     
                 }
             } catch (InterruptedException ex) {
