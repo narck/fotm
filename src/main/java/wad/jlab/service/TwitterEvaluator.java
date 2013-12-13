@@ -63,7 +63,7 @@ public class TwitterEvaluator implements EvaluatorService {
         
         Ini ini = new Ini();
         try {
-            File config = new File("src/main/resources/config/api.ini");
+            File config = new File("src/main/resources/config/apiconfig.ini");
             ini.load(new FileReader(config));
             Ini.Section consumer = ini.get("consumer");
             Ini.Section access = ini.get("access");
