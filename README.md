@@ -7,9 +7,6 @@ Need to use a database for your program? This app will tell you which one to cho
 Flavour of the Now (FOTN) parses Twitter feeds to determine what is your database of choice. The base functionality of the app is built upon the Twitter API 1.1, and it uses the twitter4j library.
 It runs a Java Servlet front-end, although the results don't necessarily have only limited use. Users primarily make requests to the servlet, when the core logic does its work behind the scenes. 
 
-# NOTE
-Ycombinator component has been redacted.
-
 # Instructions
 To run the app, simply clone the source and run the following in jlab/:
 ```shell
