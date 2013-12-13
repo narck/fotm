@@ -33,18 +33,20 @@ public class UpdaterThread implements Runnable {
         this.twitter=twitter;
     }
     
-    
+    /**
+     * Enable syslogging if you need it.
+     */
     @Override
     public void run() {
-        System.out.println("Thread started");
+            //System.out.println("Thread started");
         while(true) {
             try {
                 TimeUnit.MINUTES.sleep(30);
-                System.out.println("Checking cache...");
+                    //System.out.println("Checking cache...");
                 if (history.getLatest().hasTimedOut()) {
                     twitter.evaluate();
                     history.addToHistory(new TwitterCache(twitter.giveResult()));
-                    System.out.println("Finished.");
+                        //System.out.println("Finished.");
                     
                 }
             } catch (InterruptedException ex) {

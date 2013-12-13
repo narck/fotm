@@ -75,6 +75,7 @@ public class TwitterHistory {
     /**
      * Return the month's trending hashtag calculated from
      * the current cache.
+     * 
      * @return TwitterCache this months trending hashtag
      */
     public TwitterCache getMonthsTrending() {
@@ -100,7 +101,7 @@ public class TwitterHistory {
      * @return Map<String, Integer> map of tag entry counts in the list
      */
     public Map<String, Integer> generateCountMap() {
-        Map<String, Integer> counts = new HashMap<String, Integer>();
+        Map<String, Integer> counts = new HashMap<>();
 
         for (TwitterCache t : history) {
             String tag = t.getHashtagWithHash();

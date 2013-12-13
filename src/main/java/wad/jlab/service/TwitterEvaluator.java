@@ -16,7 +16,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import wad.jlab.logic.TwitterCrunch;
-import wad.jlab.repo.TwitterHistory;
 
     /**
      * Evaluator service with Twitter integration. Uses twitter4j library for functionality.

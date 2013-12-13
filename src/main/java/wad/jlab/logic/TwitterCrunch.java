@@ -16,7 +16,11 @@ import twitter4j.Status;
 /**
  * A helper class for TwitterEvaluator. 
  * 
- * Takes
+ * Takes a SortedMap<String, List<Status>> containing a String as a key,
+ * and a list of tweets associated to it, and calculates which hashtag 
+ * the best score.
+ * 
+ * The "main" method is crunchTrendingTag, which returns the value.
  */
 public class TwitterCrunch {
     
@@ -66,7 +70,7 @@ public class TwitterCrunch {
      * Remove all tweets from this not this month.
      * To get reliable results, suppress any other months than the ongoing one.
      * 
-     * @param List<Status> tagTweets A list of Status objects.
+     * @param tagTweets A list of Status objects.
      * @return The list without tweets from previous months.
      */
     public List<Status> removeOlderTweets(List<Status> tagTweets) {
@@ -92,7 +96,8 @@ public class TwitterCrunch {
      * so we can use this method in the main crunchTrendingTag if there is collision in the
      * dateScores method.
      * 
-     * @params Map<String, Integer> dateScores, Map<String, Integer> timeScores
+     * @param dateScores
+     * @param timeScores
      * @return The timescore table with the non-colliding (lower) scores removed.
      */
     public Map<String, Integer> removeNonCollidingTimeScores(Map<String, Integer> dateScores, Map<String, Integer> timeScores) {
@@ -112,6 +117,7 @@ public class TwitterCrunch {
     
     /**
      * Returns the highest value from a Collection.
+     * 
      * @param scores
      * @return The highest value in the collection.
      */
@@ -127,7 +133,7 @@ public class TwitterCrunch {
 
     /**
      * Checks whether there are two identical dateScores in the flow by making a valueset.
-     * @param Map<String, Integer> dateScore
+     * @param dateScore
      * @return boolean value
      */
     public boolean collisionsInScores(Map<String, Integer> dateScore) {
@@ -139,7 +145,8 @@ public class TwitterCrunch {
      * The "main" method. Uses the helper methods to determine the result as String.
      * Toggle comments to see them in the server log. They help a lot when debugging the fetched results.
      * 
-     * @param HashMap<String, List<Status>> A Map of hashtags and their latest tweets.
+     * NOTE that if you need syslogging, uncomment the indented system outs.
+     * @param hashtagsAndTweets A Map of hashtags and their latest tweets.
      * @return A string of the most popular hashtag.
      */
     public String crunchTrendingTag(SortedMap<String, List<Status>> hashtagsAndTweets) {
@@ -149,16 +156,16 @@ public class TwitterCrunch {
         String winner = "notfound"; // you should not see this
         populateScores(dateScores, timeScores, hashtagsAndTweets);
         
-        System.out.println("Determining tag...");
+            //System.out.println("Determining tag...");
         if (collisionsInScores(dateScores)) {
-             System.out.println("Datescores: "+  dateScores);
+                //System.out.println("Datescores: "+  dateScores);
             removeNonCollidingTimeScores(dateScores, timeScores);
-             System.out.println("Removing lower scores from timescores...");
-             System.out.println(timeScores);
+                //System.out.println("Removing lower scores from timescores...");
+                //System.out.println(timeScores);
             winner = compareHashtags(timeScores); 
         } else {
-             System.out.println("No datescore collisions!");
-             System.out.println(dateScores);
+                //System.out.println("No datescore collisions!");
+                //System.out.println(dateScores);
             winner = compareHashtags(dateScores);
         }
         
@@ -169,7 +176,7 @@ public class TwitterCrunch {
      * Compares score mappings together. Takes the first value in treemap, and traverses
      * through the map comparing each scoremap to the leading score.
      * 
-     * @param SortedMap<String, Integer> scores
+     * @param scores
      * @return The string of the most trending tag.
      */
     public String compareHashtags(SortedMap<String, Integer> scores) {

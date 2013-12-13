@@ -6,7 +6,6 @@ import java.util.Date;
 /** 
  * Simple data class to store the latest winning result.
  * Use to avoid getting rate-limited.
- * @param hashtag Simply provide the hashtag. Everything else is generated.
  */
 public class TwitterCache {
     /**
@@ -16,7 +15,7 @@ public class TwitterCache {
     /**
      * The date when this cache entry was created.
      */
-    private Date dateFetched;
+    private final Date dateFetched;
     /**
      * These two are just to enable testing by hand if you need them.
      */
@@ -26,7 +25,7 @@ public class TwitterCache {
     
     /**
      * Constructs the new cache and sets a date to it. Cachetime is for testing if needed.
-     * @param hashtag as a string object.
+     * @param hashtag as a string object. Use the leading hashtag when passing a String.
      */
     public TwitterCache(String hashtag) {
         this.hashtag=hashtag;
@@ -34,7 +33,7 @@ public class TwitterCache {
         this.cacheTime+=1;
     }
     
-
+    
     public int getCacheTimeout() {
         return cacheTimeout;
     }
@@ -84,7 +83,7 @@ public class TwitterCache {
      * @return boolean timeout value.
      */
     public boolean hasTimedOut() {
-        //return true; // enable to test per hand
+        //return true; // use this + updater thread to test by hand
         Calendar cachetime = Calendar.getInstance();
         cachetime.setTime(dateFetched);
         return cachetime.get(Calendar.HOUR_OF_DAY) != Calendar.getInstance().get(Calendar.HOUR_OF_DAY); 

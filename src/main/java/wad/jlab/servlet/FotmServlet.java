@@ -1,6 +1,5 @@
 package wad.jlab.servlet;
 
-import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,7 +51,7 @@ public class FotmServlet {
      * Note that an "oresult" string is passed to the model if errors occur within core logic.
      * 
      * @see setNewCache()
-     * @param model
+     * @param model Spring model
      * @return path to a .jsp view
      */
     @RequestMapping(value="/", method=RequestMethod.GET)
@@ -69,19 +68,19 @@ public class FotmServlet {
      * Invoke at GET requests to verify that cache has something.
      */
     public void threadCheck() {
-        System.out.println("thread check");
         if (!threadStarted) {
             setNewCache().getHashtag(); //populate cache so thread can continue working
             threadStarted=true;
             Runnable r = thread;
-            Thread thread = new Thread(r);
-            thread.start();
+            Thread updatingThread = new Thread(r);
+            updatingThread.start();
         }
     }
     
     
     /**
      * Helper method to avoid copypasting while setting caches.
+     * 
      * @return TwitterCache returns the saved cache.
      */
     public TwitterCache setNewCache() {
@@ -96,7 +95,7 @@ public class FotmServlet {
      * Controller for the history view. 
      * Check first if there's a new cache object. 
      * 
-     * @param model
+     * @param model Spring model
      * @return path to a .jsp view
      */
     @RequestMapping(value="/history", method=RequestMethod.GET)
@@ -114,7 +113,7 @@ public class FotmServlet {
     /**
      * Controller for the about page.
      * 
-     * @param model
+     * @param model Spring model
      * @return .jsp view
      */
     @RequestMapping(value="/about", method=RequestMethod.GET)
@@ -126,6 +125,7 @@ public class FotmServlet {
     
     /**
      * REST mapping for getting Fotn
+     * Creates a simple JSON object.
      * @return FOTN as a String
      */
     @RequestMapping(value="/now.json", method=RequestMethod.GET)
@@ -137,6 +137,7 @@ public class FotmServlet {
     }
     /**
      * REST mapping for getting Fotm
+     * Creates a simple JSON object.
      * @return FOTM as a String
      */
     @RequestMapping(value="/month.json", method=RequestMethod.GET)

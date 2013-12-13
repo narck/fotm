@@ -17,7 +17,6 @@ import twitter4j.UserMentionEntity;
  * Due to twitter4j Status class supporting only results from the API,
  * this class will allow us to test TwitterCrunch. 
  * NOTE: Only the createdAt method is needed. 
- * @param Date createdAt A sample date you want to test
  */
 public class TestStatus implements Status {
 
