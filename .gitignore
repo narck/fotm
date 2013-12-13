@@ -1,5 +1,5 @@
-./target
-/target/
 .DS_Store
 .ini
 /src/main/resources/config/api.ini
+./target/classes/config/api.ini
+/target/classes/config/api.ini

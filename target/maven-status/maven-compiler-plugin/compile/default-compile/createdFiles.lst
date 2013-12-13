@@ -1,0 +1,7 @@
+wad/jlab/data/TwitterCache.class
+wad/jlab/service/UpdaterThread.class
+wad/jlab/service/EvaluatorService.class
+wad/jlab/servlet/FotmServlet.class
+wad/jlab/service/TwitterEvaluator.class
+wad/jlab/logic/TwitterCrunch.class
+wad/jlab/repo/TwitterHistory.class
