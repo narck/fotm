@@ -1,4 +1,4 @@
 .DS_Store
 .ini
 /target/
-/doc/*.txt
+./doc/*.txt
