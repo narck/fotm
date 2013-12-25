@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Build-Jdk: 1.7.0_11
-Built-By: narck
-Created-By: Apache Maven 3.1.1
-Archiver-Version: Plexus Archiver
-
